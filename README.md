@@ -16,7 +16,7 @@
 
 - [administrative commands regarding app management]
 - [basic steps for configuration]
-- Refer to the [Wiki](https://github.com/PanJiaChen/vue-admin-template/wiki) for more Documentation
+- Refer to the [Wiki](https://github.com/cubernetes/ft_transcendence/wiki) for more Documentation
 
 ## Demo
 
