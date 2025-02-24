@@ -24,6 +24,16 @@
 - [a gif showcasing the additional features (chat, accounts, etc.)]
 - [opt: alt text: a gif showcasing the administrative features]
 
+## Core Features
+- Web
+- User Management
+- AI-Algo
+- Cybersecurity
+- Devops
+- Graphics
+- Accessibility
+- Server-Side Pong
+
 ## License
 
 - [CC0 1.0 Universal](COPYING)
