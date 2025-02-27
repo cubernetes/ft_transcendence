@@ -25,14 +25,14 @@
 - [opt: alt text: a gif showcasing the administrative features]
 
 ## Core Features
-- Web
-- User Management
-- AI-Algo
-- Cybersecurity
-- Devops
-- Graphics
-- Accessibility
-- Server-Side Pong
+- Interactive webapp to play 3D pong - Front-End (John) && Back-End (Ben & Darren)
+- Account management (TBD)
+- Join matches via the a CLI client (or maybe [SSH](https://github.com/charmbracelet/wish), let's see) (TBD)
+- Overkill security measures (ModSecurity, HashiCorp Vault, 2FA, JWT) - Timo
+- AI opponent (TBD)
+- Some accessibility features (TBD)
+- Log management and observability (ELK + Grafana) - Sonia
+- Game statistics also on Blockchain - John
 
 ## License
 
