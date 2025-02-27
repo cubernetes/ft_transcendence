@@ -1,0 +1,16 @@
+{
+	acme_ca https://acme.zerossl.com/v2/DV90 # let's encrypt is nice, but let's try the alternative
+	# email nobody@nobody.org # not sure if needed
+	skip_install_trust # caddy is running as non-root, therefore this won't work (and isn't needed anyway)
+	http_port 8080
+	https_port 8443
+}
+
+(static) {
+	root * /static
+	file_server
+}
+
+localhost {
+	import static
+}
