@@ -1,0 +1,11 @@
+services:
+  caddy:
+    build:
+      context: "./caddy/"
+    container_name: caddy
+    restart: unless-stopped
+    volumes:
+      - "./caddy/static:/static:rw"
+    ports:
+      - "80:8080"
+      - "443:8443"

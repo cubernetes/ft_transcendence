@@ -12,6 +12,11 @@
 
 - [make, make debug, make ..., options, basic options]
 
+### Development
+
+- `docker compose up -d`
+- `curl --cacert <(./caddy/get_root_certificate.sh) https://localhost`
+
 ## Advanced/Configuration
 
 - [administrative commands regarding app management]
