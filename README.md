@@ -16,6 +16,7 @@
 
 - `docker compose up -d`
 - `curl --cacert <(./caddy/get_root_certificate.sh) https://localhost`
+- Or [install](https://tech.surveypoint.com/tips/browser-trust-caddy-ssl-certs/) the root certificate on your OS
 
 ## Advanced/Configuration
 
