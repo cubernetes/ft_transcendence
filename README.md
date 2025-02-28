@@ -10,7 +10,12 @@
 
 ## Build
 
-- [make, make debug, make ..., options, basic options]
+1. Run docker container:
+```bash
+docker compose up --build -d
+```
+
+2. Open site at https://localhost:8443/
 
 ### Development
 
