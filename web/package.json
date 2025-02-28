@@ -4,7 +4,7 @@
   "scripts": {
     "compile": "tsc",
     "build": "npm run build:css && webpack --mode production",
-    "build:css": "npx @tailwindcss/cli -i ./src/styles/styles.css -o ./dist/styles/output.css"
+    "build:css": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/output.css"
   },
   "devDependencies": {
     "css-loader": "^7.1.2",
