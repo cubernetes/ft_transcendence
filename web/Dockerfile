@@ -1,3 +1,17 @@
+# Build Stage: TypeScript + Webpack
+FROM node:18 AS web-builder
+WORKDIR /app
+
+# Install dependencies and build
+COPY package.json package-lock.json ./
+RUN npm install
+
+COPY tsconfig.json webpack.config.js ./
+COPY dist/ dist/
+COPY src/ src/
+RUN npm run build
+
+# Build Stage: Custom Caddy with Coraza WAF
 FROM caddy:2.9.1-builder-alpine AS builder
 
 # Needed because of CGO_ENABLED=1 below
@@ -21,6 +35,9 @@ COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY                ./caddy-wrapper.sh /caddy-wrapper.sh
 COPY                ./Caddyfile.template /etc/caddy/Caddyfile.template
+
+# Copy built site from Node.js build stage
+COPY --from=web-builder /app/dist /srv
 
 # ensure directories and correct owners
 RUN rm -rf            /data /config /srv /static && \
