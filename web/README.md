@@ -2,10 +2,12 @@
 
 ## How to run
 
-Run docker container:
+1. Run docker container:
 ```bash
 docker compose up --build -d
 ```
+
+2. Open site at https://localhost:8443/
 
 ## Usage of external tools
 
