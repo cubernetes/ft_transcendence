@@ -1,0 +1,15 @@
+{
+	skip_install_trust # caddy is running as non-root, therefore CA trust installation won't work (and isn't needed anyway inside the container)
+	http_port 8080
+	https_port 8443
+}
+
+(static) {
+	root * /static
+	file_server
+}
+
+# Below variables will be replaced inside caddy-wrapper.sh
+$SCHEME://$DOMAIN {
+	import static
+}

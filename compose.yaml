@@ -1,11 +1,24 @@
+name: ft-transcendence
+
 services:
-  caddy:
+  caddy-coraza:
     build:
-      context: "./caddy/"
-    container_name: caddy
+      context: "./caddy-coraza/"
+    container_name: caddy-coraza
     restart: unless-stopped
     volumes:
-      - "./caddy/static:/static:rw"
+      - "./caddy-coraza/static/:/static/"
     ports:
       - "80:8080"
       - "443:8443"
+    environment:
+      DOMAIN: ${DOMAIN:-}
+      SCHEME: ${SCHEME:-}
+      PROD: ${PROD:-0}
+    develop:
+      watch:
+        - path: ./caddy-coraza/Caddyfile.template
+          action: sync+exec
+          target: /etc/caddy/Caddyfile.template
+          exec:
+            command: /caddy-wrapper.sh reload
