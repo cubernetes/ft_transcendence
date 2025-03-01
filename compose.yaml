@@ -16,9 +16,9 @@ services:
       SCHEME: ${SCHEME:-}
       PROD: ${PROD:-0}
     develop:
-      watch:
+      watch: # will reload caddy when changing Caddyfile.template in the host system
         - path: ./caddy-coraza/Caddyfile.template
           action: sync+exec
           target: /etc/caddy/Caddyfile.template
-          exec:
+          exec: # this requires docker compose 2.32.2 or later
             command: /caddy-wrapper.sh reload
