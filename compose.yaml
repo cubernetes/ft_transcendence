@@ -16,7 +16,5 @@ services:
     develop:
       watch: # will reload caddy when changing Caddyfile.template in the host system
         - path: ./caddy-coraza/Caddyfile.template
-          action: sync+exec
+          action: rebuild
           target: /etc/caddy/Caddyfile.template
-          exec: # this requires docker compose 2.32.2 or later
-            command: /caddy-wrapper.sh reload
