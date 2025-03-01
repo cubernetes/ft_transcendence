@@ -1,9 +1,11 @@
 import '../../dist/styles/output.css';
+import { createRouter } from './router/Router';
 
-const greeting: string = "Be ready to transcend!!";
-document.addEventListener('DOMContentLoaded', () => {
+function launchSite(): void {
     const appElement = document.getElementById('app');
     if (appElement) {
-        appElement.innerHTML = `<h1 class="text-3xl font-bold underline">${greeting}</h1>`;
+        createRouter(appElement);
     }
-});
+}
+
+document.addEventListener('DOMContentLoaded', launchSite);
