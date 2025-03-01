@@ -6,6 +6,9 @@
 }
 
 (static) {
+	# The following tests should return 403 Forbidden and the Caddy log should show the block event
+	# - `curl localhost?foo=/bin/bash`
+	# - `curl localhost -d /bin/bash`
 	coraza_waf {
 		load_owasp_crs
 		directives `
