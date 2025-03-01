@@ -23,9 +23,12 @@ COPY                ./caddy-wrapper.sh /caddy-wrapper.sh
 COPY                ./Caddyfile.template /etc/caddy/Caddyfile.template
 
 # ensure directories and correct owners
-RUN rm -rf /data /config /srv && \
-	mkdir /data /config /srv && \
+RUN rm -rf            /data /config /srv /static && \
+	mkdir             /data /config /srv         && \
 	chown caddy:caddy /data /config /srv
+
+# Bind mount would be better, but gives weird error: "open /static: stale NFS file handle"
+COPY --chown=caddy:caddy ./static /static
 
 WORKDIR /srv
 
