@@ -12,6 +12,14 @@
 
 - [make, make debug, make ..., options, basic options]
 
+### Development
+
+- `docker compose up -d`
+- `curl --cacert <(./caddy/get_root_certificate.sh) https://localhost`
+- Or alternatively: `curl -k https://localhost`
+- Or [install](https://tech.surveypoint.com/tips/browser-trust-caddy-ssl-certs/) the root certificate on your OS
+- And don't forget about `/etc/hosts` (which also exists on Windows) or tweaking the Caddyfile if you need another host
+
 ## Advanced/Configuration
 
 - [administrative commands regarding app management]

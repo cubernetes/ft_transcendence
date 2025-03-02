@@ -1,0 +1,24 @@
+name: ft-transcendence
+
+services:
+  caddy-coraza:
+    build:
+      context: "./caddy-coraza/"
+    container_name: caddy-coraza
+    restart: unless-stopped
+    volumes:
+      - "./caddy-coraza/static/:/static/"
+    ports:
+      - "80:8080"
+      - "443:8443"
+    environment:
+      DOMAIN: ${DOMAIN:-}
+      SCHEME: ${SCHEME:-}
+      PROD: ${PROD:-0}
+    develop:
+      watch: # will reload caddy when changing Caddyfile.template in the host system
+        - path: ./caddy-coraza/Caddyfile.template
+          action: sync+exec
+          target: /etc/caddy/Caddyfile.template
+          exec: # this requires docker compose 2.32.2 or later
+            command: /caddy-wrapper.sh reload
