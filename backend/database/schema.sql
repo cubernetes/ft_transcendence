@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS games (
     winner_id INTEGER NOT NULL,
     player1_score INTEGER NOT NULL,
     player2_score INTEGER NOT NULL,
-    status TEXT NOT NULL DEFAULT 'ongoing',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     finished_at TIMESTAMP,
     FOREIGN KEY (tournament_id) REFERENCES tournaments(id),
@@ -28,7 +27,6 @@ CREATE TABLE IF NOT EXISTS games (
     FOREIGN KEY (player2_id) REFERENCES users(id),
     FOREIGN KEY (winner_id) REFERENCES users(id),
     CHECK (winner_id = player1_id OR winner_id = player2_id),
-    CHECK (status in ('completed', 'ongoing')),
     CHECK (player1_id != player2_id)
 );
 
@@ -36,12 +34,12 @@ CREATE TABLE IF NOT EXISTS games (
 CREATE TABLE IF NOT EXISTS tournaments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
+    creator_id INTEGER NOT NULL,
     winner_id INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by INTEGER NOT NULL,
     finished_at TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(id),
     FOREIGN KEY (winner_id) REFERENCES users(id),
+    FOREIGN KEY (creator_id) REFERENCES users(id),
     CHECK ((winner_id IS NULL AND finished_at IS NULL) OR (winner_id IS NOT NULL AND finished_at IS NOT NULL))
 );
 

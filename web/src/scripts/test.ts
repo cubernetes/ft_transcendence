@@ -9,6 +9,7 @@ export async function fetchTestData() {
         
         const data = await response.json();
 
+        // Process data into how it's typed on the leaderboard page
         const processedData = data.map((p: Record<string, any>) => ({
             id: p.id,
             name: p.username,
@@ -19,8 +20,7 @@ export async function fetchTestData() {
             ...p,
             rank: i + 1
         }))
-
-        console.log('Response data:', data);
+        
         return processedData;
     } catch (error) {
         console.error('Fetch error:', error);

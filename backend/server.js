@@ -1,3 +1,5 @@
+// Currently serving as an example for the frontend only and in no way is a great usable version
+
 import Fastify from 'fastify';
 import { open } from 'sqlite';
 import sqlite3 from 'sqlite3';
@@ -38,8 +40,6 @@ async function setupDatabase() {
 
   // Only initialize if database doesn't exist
   if (!dbExists) {
-    fastify.log.info('Initializing new database...');
-    
     // Load and execute schema
     const schema = await fs.readFile(path.join(__dirname, 'database', 'schema.sql'), 'utf8');
     await db.exec(schema);
@@ -48,10 +48,7 @@ async function setupDatabase() {
     if (process.env.NODE_ENV === 'development') {
       const seed = await fs.readFile(path.join(__dirname, 'database', 'seed.sql'), 'utf8');
       await db.exec(seed);
-      fastify.log.info('Development seed data loaded');
     }
-  } else {
-    fastify.log.info('Using existing database');
   }
 }
 
@@ -59,10 +56,8 @@ async function setupDatabase() {
 fastify.get('/users', async () => {
   try {
     const users = await db.all('SELECT id, username, wins, losses FROM users');
-    fastify.log.info('Users fetched:', users);
     return users;
   } catch (error) {
-    fastify.log.error('Error fetching users:', error);
     throw error;
   }
 });
