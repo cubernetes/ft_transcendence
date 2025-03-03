@@ -37,12 +37,12 @@ COPY --from=builder /etc/group /etc/group
 COPY                ./caddy-wrapper.sh /caddy-wrapper.sh
 COPY                ./Caddyfile.template /etc/caddy/Caddyfile.template
 
-# ensure directories and correct owners
-RUN rm -rf            /data /config /srv && \
-	mkdir             /data /config
+RUN rm -rf /srv/ && mkdir -p /srv/.local/share/caddy/
 
 # Copy built site from Node.js build stage
 COPY --from=web-builder --chown=caddy:caddy /app/dist/ /srv/
+
+RUN chown -R caddy:caddy /srv/
 
 WORKDIR /srv/
 
