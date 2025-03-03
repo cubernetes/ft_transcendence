@@ -1,14 +1,15 @@
 # Build Stage: TypeScript + Webpack
 FROM node:18 AS web-builder
-WORKDIR /app
+WORKDIR /app/
 
 # Install dependencies and build
 COPY package.json package-lock.json ./
 RUN npm install
 
 COPY tsconfig.json webpack.config.js ./
-COPY dist/ dist/
-COPY src/ src/
+#COPY ./dist/ ./dist/ #sus
+RUN mkdir -p ./dist/
+COPY ./src/ ./src/
 RUN npm run build
 
 # Build Stage: Custom Caddy with Coraza WAF
@@ -36,16 +37,12 @@ COPY --from=builder /etc/group /etc/group
 COPY                ./caddy-wrapper.sh /caddy-wrapper.sh
 COPY                ./Caddyfile.template /etc/caddy/Caddyfile.template
 
-# Copy built site from Node.js build stage
-COPY --from=web-builder /app/dist /srv
-
 # ensure directories and correct owners
-RUN rm -rf            /data /config /srv /static && \
-	mkdir             /data /config /srv         && \
-	chown caddy:caddy /data /config /srv
+RUN rm -rf            /data /config /srv && \
+	mkdir             /data /config
 
-# Bind mount would be better, but gives weird error: "open /static: stale NFS file handle"
-COPY --chown=caddy:caddy ./static /static
+# Copy built site from Node.js build stage
+COPY --from=web-builder --chown=caddy:caddy /app/dist/ /srv/
 
 WORKDIR /srv
 
