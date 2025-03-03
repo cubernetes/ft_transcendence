@@ -7,8 +7,7 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 COPY tsconfig.json webpack.config.js ./
-#COPY ./dist/ ./dist/ #sus
-RUN mkdir -p ./dist/
+COPY ./dist/ ./dist/
 COPY ./src/ ./src/
 RUN npm run build
 
