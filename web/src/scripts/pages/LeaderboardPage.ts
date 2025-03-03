@@ -1,7 +1,8 @@
 import { createHeader } from '../components/Header';
 import { createFooter } from '../components/Footer';
+import { fetchTestData } from '../test';
 
-export function createLeaderboardPage(): HTMLElement {
+export async function createLeaderboardPage(): Promise<HTMLElement> {
   const fragment = document.createDocumentFragment();
   
   const header = createHeader();
@@ -39,13 +40,9 @@ export function createLeaderboardPage(): HTMLElement {
   tbody.className = 'bg-white divide-y divide-gray-200';
   
   // Sample data - in a real app, this would come from your backend
-  const players = [
-    { rank: 1, name: 'Player1', wins: 10, losses: 2 },
-    { rank: 2, name: 'Player2', wins: 8, losses: 3 },
-    { rank: 3, name: 'Player3', wins: 6, losses: 4 }
-  ];
+  const players = await fetchTestData();
   
-  players.forEach(player => {
+  players.forEach((player: Record<string, any>) => {
     const row = document.createElement('tr');
     
     const rankCell = document.createElement('td');
