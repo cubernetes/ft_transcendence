@@ -8,6 +8,12 @@ import cors from "@fastify/cors";
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Route imports
+import userRoutes from './routes/userRoutes.js';
+import gameRoutes from './routes/gameRoutes.js';
+import tournamentRoutes from './routes/tournamentRoutes.js';
+import friendRoutes from './routes/friendRoutes.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -52,25 +58,40 @@ async function setupDatabase() {
   }
 }
 
-// Example route for frontend
-fastify.get('/users', async () => {
-  try {
-    const users = await db.all('SELECT id, username, wins, losses FROM users');
-    return users;
-  } catch (error) {
-    throw error;
-  }
-});
+
+
+
+// // Example route for frontend
+// fastify.get('/users', async () => {
+//   try {
+//     const users = await db.all('SELECT id, username, wins, losses FROM users');
+//     return users;
+//   } catch (error) {
+//     throw error;
+//   }
+// });
 
 // Start the server
 const start = async () => {
   try {
+    console.log('Connecting to database...');
     await setupDatabase();
+    console.log('Database connected');
+
+    // Register routes
+    // fastify.register(userRoutes, { db, prefix: '/api' });
+    fastify.register(userRoutes, { db });
+    fastify.register(gameRoutes, { db });
+    fastify.register(tournamentRoutes, { db });
+    fastify.register(friendRoutes, { db });
+    
     await fastify.listen({ 
       port: process.env.BACKEND_PORT || 3000,
       host: '0.0.0.0'
     });
+    console.log(`--> Server is listening on http://localhost:${process.env.BACKEND_PORT || 3000}`);
   } catch (err) {
+    console.log(err);
     fastify.log.error(err);
     process.exit(1);
   }
