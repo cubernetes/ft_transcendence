@@ -11,6 +11,8 @@ services:
       - "${DEV_HTTPS_PORT:-443}:8443"
     networks:
       - ft-transcendence-net
+    volumes:
+      - "caddy_data:/srv/.local/share/caddy/"
     environment:
       - DOMAIN=${DOMAIN:-}
       - SCHEME=${SCHEME:-}
@@ -33,6 +35,9 @@ services:
       - BACKEND_PORT=${BACKEND_PORT:-3000}
     volumes:
       - ./backend/data:/app/data
+
+volumes:
+  caddy_data:
 
 networks:
   ft-transcendence-net:
