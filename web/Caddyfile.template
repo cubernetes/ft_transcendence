@@ -29,7 +29,7 @@
 (api) {
 	import waf
 	handle_path /api/* {
-		reverse_proxy http://localhost:3000
+		reverse_proxy http://backend:3000
 	}
 }
 

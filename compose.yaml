@@ -28,8 +28,6 @@ services:
       context: "./backend/"
     container_name: backend
     restart: unless-stopped
-    ports:
-      - "${BACKEND_PORT:-3000}:${BACKEND_PORT:-3000}"
     networks:
       - ft-transcendence-net
     environment:
