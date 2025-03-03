@@ -1,20 +1,41 @@
 name: ft-transcendence
 
 services:
-  caddy-coraza:
+  web:
     build:
-      context: "./caddy-coraza/"
-    container_name: caddy-coraza
+      context: "./web/"
+    container_name: web
     restart: unless-stopped
     ports:
       - "${DEV_HTTP_PORT:-80}:8080"
       - "${DEV_HTTPS_PORT:-443}:8443"
+    networks:
+      - ft-transcendence-net
     environment:
-      DOMAIN: ${DOMAIN:-}
-      SCHEME: ${SCHEME:-}
-      PROD: ${PROD:-0}
+      - DOMAIN=${DOMAIN:-}
+      - SCHEME=${SCHEME:-}
+      - PROD=${PROD:-0}
+    # volumes: # commented out because in web/Dockerfile, we already copy the dist folder
+    #   - "./web/dist:/srv/:rw"
     develop:
       watch: # will reload caddy when changing Caddyfile.template in the host system
-        - path: ./caddy-coraza/Caddyfile.template
+        - path: ./web/Caddyfile.template
           action: rebuild
           target: /etc/caddy/Caddyfile.template
+
+  backend:
+    build:
+      context: "./backend/"
+    container_name: backend
+    restart: unless-stopped
+    networks:
+      - ft-transcendence-net
+    environment:
+      - NODE_ENV=development
+      - BACKEND_PORT=${BACKEND_PORT:-3000}
+    volumes:
+      - ./backend/data:/app/data
+
+networks:
+  ft-transcendence-net:
+    driver: bridge

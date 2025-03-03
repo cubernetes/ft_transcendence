@@ -10,15 +10,32 @@
 
 ## Build
 
-- [make, make debug, make ..., options, basic options]
+1. Run docker container:
+```bash
+docker compose up --build -d
+```
+
+2. Open site at https://localhost:8443/
 
 ### Development
 
-- `docker compose up -d`
-- `curl --cacert <(./caddy/get_root_certificate.sh) https://localhost`
-- Or alternatively: `curl -k https://localhost`
-- Or [install](https://tech.surveypoint.com/tips/browser-trust-caddy-ssl-certs/) the root certificate on your OS
-- And don't forget about `/etc/hosts` (which also exists on Windows) or tweaking the Caddyfile if you need another host
+Edit .env to include only these environment variables:
+```sh
+DEV_HTTP_PORT=8080
+```
+
+- `docker compose up -d --build`
+
+### Production
+
+Edit .env to include only these environment variables:
+```sh
+PROD=1
+DOMAIN=<your domain>
+SCHEME=https # can also be http
+```
+
+- `docker compose up -d --build`
 
 ## Advanced/Configuration
 
