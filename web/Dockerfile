@@ -3,10 +3,10 @@ FROM node:18 AS web-builder
 WORKDIR /app/
 
 # Install dependencies and build
-COPY package.json package-lock.json ./
+COPY ./package.json ./package-lock.json ./
 RUN npm install
 
-COPY tsconfig.json webpack.config.js ./
+COPY ./tsconfig.json ./webpack.config.js ./
 COPY ./dist/ ./dist/
 COPY ./src/ ./src/
 COPY ./assets/ ./assets/
@@ -24,7 +24,7 @@ RUN CGO_ENABLED=1 XCADDY_GO_BUILD_FLAGS="-ldflags='-linkmode external -extldflag
 
 # always try to make PID 1 unprivileged
 RUN addgroup caddy
-RUN adduser -h /srv -S caddy -G caddy
+RUN adduser -h /srv/ -S caddy -G caddy
 
 FROM alpine:3.21.3
 
@@ -44,7 +44,7 @@ RUN rm -rf            /data /config /srv && \
 # Copy built site from Node.js build stage
 COPY --from=web-builder --chown=caddy:caddy /app/dist/ /srv/
 
-WORKDIR /srv
+WORKDIR /srv/
 
 EXPOSE 8080
 EXPOSE 8443

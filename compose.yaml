@@ -34,7 +34,7 @@ services:
       - NODE_ENV=development
       - BACKEND_PORT=${BACKEND_PORT:-3000}
     volumes:
-      - ./backend/data:/app/data
+      - ./backend/data:/app/data/
 
 volumes:
   caddy_data:
