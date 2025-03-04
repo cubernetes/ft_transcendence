@@ -1,0 +1,4 @@
+node_modules/
+dist/scripts
+dist/styles
+dist/bundle.js

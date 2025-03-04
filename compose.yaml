@@ -1,20 +1,26 @@
 name: ft-transcendence
 
 services:
-  caddy-coraza:
+  web:
     build:
-      context: "./caddy-coraza/"
-    container_name: caddy-coraza
+      context: "./web/"
+    container_name: web
     restart: unless-stopped
     ports:
       - "${DEV_HTTP_PORT:-80}:8080"
       - "${DEV_HTTPS_PORT:-443}:8443"
+    networks:
+      - ft-transcendence-net
     environment:
       DOMAIN: ${DOMAIN:-}
       SCHEME: ${SCHEME:-}
       PROD: ${PROD:-0}
     develop:
       watch: # will reload caddy when changing Caddyfile.template in the host system
-        - path: ./caddy-coraza/Caddyfile.template
+        - path: ./web/Caddyfile.template
           action: rebuild
           target: /etc/caddy/Caddyfile.template
+
+networks:
+  ft-transcendence-net:
+    driver: bridge

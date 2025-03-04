@@ -18,7 +18,7 @@
 			SecRuleEngine on
 		`
 	}
-	root * /static
+	root * /srv
 	file_server
 }
 
