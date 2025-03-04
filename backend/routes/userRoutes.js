@@ -32,8 +32,8 @@ export default async function userRoutes(fastify, options) {
 
     // User registration route
     fastify.post('/register', async (request, reply) => {
-        const { username, password, displayName } = request.body;
-        if (!username || !password || !displayName) {
+        const { username, password } = request.body;
+        if (!username || !password) {
             return reply.code(400).send({ error: "Missing fields" });
         }
 
@@ -43,13 +43,13 @@ export default async function userRoutes(fastify, options) {
             return reply.code(400).send({ error: "Username already taken" });
         }
 
-        // Hash password
+        // Hash password: bcrypt automatically puts a salt in
         const hashedPassword = await bcrypt.hash(password, 10);
         
         // Insert new user into the database
         try {
-            await db.run("INSERT INTO users (username, password_hash, salt) VALUES (?, ?, ?, ?)", 
-                [username, hashedPassword, 'salt', displayName]);
+            await db.run("INSERT INTO users (username, password_hash) VALUES (?, ?)", 
+                [username, hashedPassword]);
             return reply.code(201).send({ message: "User registered successfully" });
         } catch (error) {
             return reply.code(500).send({ error: "Database error" });

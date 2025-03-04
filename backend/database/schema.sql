@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    salt TEXT NOT NULL,
     totp_secret TEXT,
     avatar_url TEXT DEFAULT '/assets/default-avatar.png',
     wins INTEGER DEFAULT 0,
