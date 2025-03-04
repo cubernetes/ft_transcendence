@@ -15,8 +15,6 @@ services:
       DOMAIN: ${DOMAIN:-}
       SCHEME: ${SCHEME:-}
       PROD: ${PROD:-0}
-    # volumes: # commented out because in web/Dockerfile, we already copy the dist folder
-    #   - "./web/dist:/srv/:rw"
     develop:
       watch: # will reload caddy when changing Caddyfile.template in the host system
         - path: ./web/Caddyfile.template
