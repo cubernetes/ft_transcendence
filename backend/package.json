@@ -1,18 +1,27 @@
 {
-  "name": "ftt_backend",
+  "name": "ft_transcendence_backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node dist/server.js",
+    "build": "tsc --noEmit && node build.js",
+    "watch": "tsc --noEmit && node build.js --watch"
   },
   "dependencies": {
     "@fastify/cors": "^11.0.0",
     "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.8.1",
+    "drizzle-orm": "^0.40.0",
     "fastify": "^5.2.1",
-    "jsonwebtoken": "^9.0.2",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.11.24",
+    "esbuild": "^0.20.1",
+    "typescript": "^5.3.3"
   }
 }
