@@ -13,4 +13,5 @@ prod: # Don't forget to set DOMAIN and SCHEME in .env
 
 .PHONY: clean
 clean:
+	$(DC) down
 	$(D) system prune -f # for super pristine cleaning do `prune --all --volume -f`
