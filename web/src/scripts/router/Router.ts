@@ -5,7 +5,7 @@ import { createLeaderboardPage } from '../pages/LeaderboardPage';
 
 
 export function createRouter(container: HTMLElement): void {
-  const routes: {[key: string]: () => HTMLElement} = {
+  const routes: {[key: string]: () => Promise<HTMLElement> | HTMLElement} = {
     '': createHomePage,
     'home': createHomePage,
     'game': createGamePage,
@@ -13,7 +13,7 @@ export function createRouter(container: HTMLElement): void {
     'leaderboard': createLeaderboardPage
   };
   
-  function handleRouteChange() {
+  async function handleRouteChange() {
     // Get the route from the URL hash (without the #)
     const route = window.location.hash.slice(1);
     
@@ -22,7 +22,8 @@ export function createRouter(container: HTMLElement): void {
     
     // Render the appropriate page
     const createPage = routes[route] || routes[''];
-    container.appendChild(createPage());
+    const pageEl = await createPage();
+    container.appendChild(pageEl);
   }
   
   // Listen for hash changes

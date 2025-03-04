@@ -9,6 +9,7 @@ RUN npm install
 COPY tsconfig.json webpack.config.js ./
 COPY ./dist/ ./dist/
 COPY ./src/ ./src/
+COPY ./assets/ ./assets/
 RUN npm run build
 
 # Build Stage: Custom Caddy with Coraza WAF

@@ -12,14 +12,27 @@ services:
     networks:
       - ft-transcendence-net
     environment:
-      DOMAIN: ${DOMAIN:-}
-      SCHEME: ${SCHEME:-}
-      PROD: ${PROD:-0}
+      - DOMAIN=${DOMAIN:-}
+      - SCHEME=${SCHEME:-}
+      - PROD=${PROD:-0}
     develop:
       watch: # will reload caddy when changing Caddyfile.template in the host system
         - path: ./web/Caddyfile.template
           action: rebuild
           target: /etc/caddy/Caddyfile.template
+
+  backend:
+    build:
+      context: "./backend/"
+    container_name: backend
+    restart: unless-stopped
+    networks:
+      - ft-transcendence-net
+    environment:
+      - NODE_ENV=development
+      - BACKEND_PORT=${BACKEND_PORT:-3000}
+    volumes:
+      - ./backend/data:/app/data
 
 networks:
   ft-transcendence-net:
