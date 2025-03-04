@@ -1,8 +1,8 @@
-# ft_transcendence - a pong web app
+# ft-transcendence - a pong web app
 
 > A pong app with a heap of add-on features
 
-- Live demo: [https://example.com](https://example.com)
+- Live demo: [https://ft-transcendence.app](https://ft-transcendence.app)
 
 ## Build and Run
 
@@ -13,7 +13,7 @@
 
 - [administrative commands regarding app management]
 - [basic steps for configuration]
-- Refer to the [Wiki](https://github.com/cubernetes/ft_transcendence/wiki) for more Documentation
+- Refer to the [Wiki](https://github.com/cubernetes/ft-transcendence/wiki) for more Documentation
 
 ## Demo
 
