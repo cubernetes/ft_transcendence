@@ -6,7 +6,7 @@ import {
   UnauthorizedError,
 } from "../utils/errors";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+//import jwt from "jsonwebtoken";
 
 export default class UserController {
   constructor(private userService: UserService) {}
@@ -104,13 +104,13 @@ export default class UserController {
       return new UnauthorizedError("Invalid credentials").send(reply);
 
     // Generate JWT token
-    const token = jwt.sign(
-      { id: user.id, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    // const token = jwt.sign(
+    //   { id: user.id, username: user.username },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: "1h" }
+    // );
 
     // Return the token
-    return reply.send({ token, message: "Login successful" });
+    //return reply.send({ token, message: "Login successful" });
   }
 }

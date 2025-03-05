@@ -8,6 +8,8 @@ import UserService from "./services/user.service";
 import GameService from "./services/game.service";
 import TournamentService from "./services/tournament.service";
 import tournamentRoutes from "./routes/tournament.route";
+import FriendService from "./services/friend.service";
+import friendRoutes from "./routes/friend.route";
 
 export default class App {
   private server: FastifyInstance;
@@ -32,6 +34,7 @@ export default class App {
       const userService = new UserService(this.db);
       const gameService = new GameService(this.db);
       const tournamentService = new TournamentService(this.db);
+      const friendService = new FriendService(this.db);
 
       // Register routes to fastify
       this.server.register(userRoutes, { prefix: "/users", userService });
@@ -40,6 +43,7 @@ export default class App {
         prefix: "/tournaments",
         tournamentService,
       });
+      this.server.register(friendRoutes, { prefix: "/friends", friendService });
     } catch (error) {
       this.server.log.error("Error initializing server:", error);
       process.exit(1);

@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import type GameService from "../services/game.service";
 import GameController from "../controllers/game.controller";
+
 const gameRoutes = async (
   fastify: FastifyInstance,
   options: { gameService: GameService }
