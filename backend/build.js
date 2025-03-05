@@ -3,7 +3,7 @@ import * as esbuild from "esbuild";
 const watch = process.argv.includes("--watch");
 
 const context = await esbuild.context({
-  entryPoints: ["src/server.ts"],
+  entryPoints: ["index.ts"],
   bundle: true,
   platform: "node",
   target: ["node20"],

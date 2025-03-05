@@ -1,4 +1,14 @@
-FROM node:20-alpine
+FROM node:18-alpine AS build
+
+WORKDIR /app
+
+COPY ./package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+
+FROM node:20-alpine AS production
 
 # Install build dependencies for bcrypt and other native modules
 RUN apk add --no-cache --virtual .build-deps \
@@ -11,10 +21,10 @@ RUN apk add --no-cache --virtual .build-deps \
 WORKDIR /app
 
 # Copy package files to install dependencies first
-COPY package.json package-lock.json ./
-RUN npm install
+COPY ./package*.json ./
+COPY --from=build /app/dist /app/dist
+COPY ./src/database/*.sql ./dist/
 
-# Copy the rest of the app files
-COPY . .
+RUN npm install --production
 
 CMD ["npm", "start"]

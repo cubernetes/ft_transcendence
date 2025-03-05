@@ -2,6 +2,12 @@ import Fastify, { FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import initDatabase from "./database/index";
 import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import userRoutes from "./routes/user.route";
+import gameRoutes from "./routes/game.route";
+import UserService from "./services/user.service";
+import GameService from "./services/game.service";
+import TournamentService from "./services/tournament.service";
+import tournamentRoutes from "./routes/tournament.route";
 
 export default class App {
   private server: FastifyInstance;
@@ -15,14 +21,29 @@ export default class App {
   private async init() {
     if (this.initialized) return;
 
-    this.db = await initDatabase();
+    try {
+      // Initialize database
+      this.db = await initDatabase();
 
-    // Register CORS
-    await this.server.register(cors, { origin: "*" }); // TODO: Use env variable to switch between production & development?
+      // Register CORS
+      this.server.register(cors, { origin: "*" }); // TODO: Use env variable to switch between production & development?
 
-    // Register routes to fastify
-    //await this.server.register(userRoutes, { db: this.db });
+      // Create services
+      const userService = new UserService(this.db);
+      const gameService = new GameService(this.db);
+      const tournamentService = new TournamentService(this.db);
 
+      // Register routes to fastify
+      this.server.register(userRoutes, { prefix: "/users", userService });
+      this.server.register(gameRoutes, { prefix: "/games", gameService });
+      this.server.register(tournamentRoutes, {
+        prefix: "/tournaments",
+        tournamentService,
+      });
+    } catch (error) {
+      this.server.log.error("Error initializing server:", error);
+      process.exit(1);
+    }
     this.initialized = true;
   }
 
@@ -32,18 +53,9 @@ export default class App {
     try {
       await this.server.listen({ port, host: "0.0.0.0" });
       this.server.log.info(`Server running at port ${port}!`);
-    } catch (err) {
-      this.server.log.error("Error starting server:", err);
+    } catch (error) {
+      this.server.log.error("Error starting server:", error);
       process.exit(1);
     }
-  }
-
-  public getServer() {
-    return this.server;
-  }
-
-  public getDatabase() {
-    if (!this.db) throw new Error("Database not initialized!");
-    return this.db;
   }
 }

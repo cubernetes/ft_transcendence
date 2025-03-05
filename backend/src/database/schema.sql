@@ -1,5 +1,3 @@
--- Schema.sql for reference, using drizzle-orm instead
-
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,7 +26,7 @@ CREATE TABLE IF NOT EXISTS games (
     FOREIGN KEY (player1_id) REFERENCES users(id),
     FOREIGN KEY (player2_id) REFERENCES users(id),
     FOREIGN KEY (winner_id) REFERENCES users(id),
-    CHECK (winner_id IS NULL OR winner_id = player1_id OR winner_id = player2_id),
+    CHECK (winner_id IS NULL OR (winner_id = player1_id OR winner_id = player2_id)),
     CHECK (player1_id != player2_id),
     CHECK (player1_score >= 0 AND player2_score >= 0),
     CHECK ((winner_id IS NULL AND finished_at IS NULL) OR (winner_id IS NOT NULL AND finished_at IS NOT NULL))
