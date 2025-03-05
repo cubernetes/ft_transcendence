@@ -43,12 +43,17 @@ export default class UserController {
 
   async register(
     request: FastifyRequest<{
-      Body: { username: string; password: string; displayName: string };
+      Body: {
+        username: string;
+        password: string;
+        displayName: string;
+      };
     }>,
     reply: FastifyReply
   ) {
     const { username, password, displayName } = request.body;
 
+    // Add validation step
     if (!username || !password || !displayName)
       return new BadRequestError("Missing fields").send(reply);
 
@@ -62,20 +67,28 @@ export default class UserController {
 
     // Insert new user into the database
     try {
-      await db.run(
-        "INSERT INTO users (username, password_hash, salt) VALUES (?, ?, ?, ?)",
-        [username, hashedPassword, "salt", displayName]
-      );
+      const user = {
+        username,
+        displayName,
+        passwordHash: hashedPassword,
+        salt: "salt", // TODO: Check lib for hash
+      };
+      await this.userService.create(user);
       return reply.code(201).send({ message: "User registered successfully" });
     } catch (error) {
-      return reply.code(500).send({ error: "Database error" });
+      return error instanceof CustomError
+        ? error.send(reply)
+        : new CustomError(`Failed to register user`).send(reply);
     }
   }
 
   // TODO: Need to look into this more, only copied from js version so far
   async login(
     request: FastifyRequest<{
-      Body: { username: string | null; password: string | null };
+      Body: {
+        username: string;
+        password: string;
+      };
     }>,
     reply: FastifyReply
   ) {
