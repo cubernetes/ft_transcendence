@@ -23,24 +23,15 @@
 }
 
 (static) {
-	import waf
+	#import waf
 	root * /srv
 	file_server
 }
 
 (api) {
-	import waf
+	#import waf
 	handle_path /api/* {
 		reverse_proxy http://backend:3000
-	}
-}
-
-(websocket) {
-	handle_path /ws {
-		reverse_proxy http://backend:3000 {
-			header_up Connection {>Connection}
-			header_up Upgrade {>Upgrade}
-		}
 	}
 }
 
@@ -49,5 +40,11 @@
 $SCHEME://$DOMAIN {
 	import static
 	import api
-	import websocket
+	
+	# WebSocket specific matcher and routing
+	@websockets {
+		header Connection *Upgrade*
+		header Upgrade    websocket
+	}
+	reverse_proxy @websockets http://backend:3000
 }

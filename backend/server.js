@@ -40,6 +40,14 @@ fastify.register(cors, {
 // Enable WebSocket support
 fastify.register(fastifyWebsocket);
 
+// Modify Content-Security-Policy header to allow WebSocket connections
+fastify.addHook('onSend', (request, reply, payload) => {
+  // Ensure that WebSocket connections to localhost are allowed
+  reply.header('Content-Security-Policy', "default-src 'self'; connect-src 'self' ws://localhost:8080;");
+  return payload;
+});
+// TODO: Allow wss later here
+
 // Ensure data directory exists
 const dataDir = path.join(__dirname, 'data');
 fs.mkdir(dataDir, { recursive: true }).catch(console.error);
@@ -72,117 +80,88 @@ async function setupDatabase() {
   }
 }
 
-const players = new Map(); // Stores player positions { id: { x, y, connection } }
+// const players = new Map(); // Stores player positions { id: { x, y, connection } }
 
-fastify.register(async function (fastify) {
-  fastify.get('/ws', { websocket: true }, (connection, req) => {
-      // Handle WebSocket connection here
-      connection.socket.send('Welcome to WebSocket!');
-      
-      connection.socket.on('message', (message) => {
-          console.log('Received message:', message);
-      });
-  });
+// // fastify.register(async function (fastify) {
+// fastify.get('/ws', { websocket: true }, (connection, req) => {
+//   if (!connection || !connection.socket) {
+//     console.error('WebSocket connection is undefined');
+//     return;
+//   }
+//   console.log('connection:', connection);
+//   console.log('New WebSocket connection established');
 
-  // fastify.get('/ws', { websocket: true }, (connection, req) => {
-  //   connection.socket.send('Connection established');  
-  //   const playerId = Math.random().toString(36).substring(2); // Generate random player ID
+//   console.log('WebSocket is OPEN');
+  
+//   const playerId = Math.random().toString(36).substring(2);
+//   players.set(playerId, { x: 50, y: 50, connection });
 
-  //     // Set initial player position in the map
-  //     players.set(playerId, { x: 50, y: 50, connection });
+//   // Send initial player position after the WebSocket is open
+//   connection.send(JSON.stringify({
+//     event: 'init',
+//     position: { x: 50, y: 50 },
+//     allPlayers: Array.from(players.entries()).map(([id, player]) => ({
+//       playerId: id,
+//       position: { x: player.x, y: player.y }
+//     }))
+//   }));
+  
+//   // Handle incoming messages
+//   connection.on('message', (message) => {
+//     try {
+//         const data = JSON.parse(message);
 
-  //     // Send the player's initial position
-  //     connection.socket.send(JSON.stringify({
-  //         event: 'init',
-  //         position: { x: 50, y: 50 },
-  //         allPlayers: Array.from(players.entries()).map(([id, player]) => ({
-  //             playerId: id,
-  //             position: { x: player.x, y: player.y }
-  //         }))
-  //     }));
+//         if (data.type === 'move') {
+//             let player = players.get(playerId);
+//             if (!player) return;
 
-  //     // Handle incoming messages
-  //     connection.socket.on('message', (message) => {
-  //         try {
-  //             const data = JSON.parse(message);
+//             // Update player position based on direction
+//             if (data.direction === 'up') player.y = Math.max(0, player.y - 10);
+//             if (data.direction === 'down') player.y = Math.min(380, player.y + 10);
+//             if (data.direction === 'left') player.x = Math.max(0, player.x - 10);
+//             if (data.direction === 'right') player.x = Math.min(580, player.x + 10);
 
-  //             if (data.type === 'move') {
-  //                 let player = players.get(playerId);
-  //                 if (!player) return;
+//             // Update the player in the map
+//             players.set(playerId, player);
 
-  //                 // Update player position based on direction
-  //                 if (data.direction === 'up') player.y = Math.max(0, player.y - 10);
-  //                 if (data.direction === 'down') player.y = Math.min(380, player.y + 10);
-  //                 if (data.direction === 'left') player.x = Math.max(0, player.x - 10);
-  //                 if (data.direction === 'right') player.x = Math.min(580, player.x + 10);
-
-  //                 // Update the player in the map
-  //                 players.set(playerId, player);
-
-  //                 // Broadcast updated position to all other players
-  //                 for (const [id, playerConn] of players) {
-  //                     if (id !== playerId && playerConn.connection.readyState === 1) {
-  //                         playerConn.connection.send(JSON.stringify({
-  //                             event: 'playerMove',
-  //                             playerId,
-  //                             position: { x: player.x, y: player.y }
-  //                         }));
-  //                     }
-  //                 }
-  //             }
-  //         } catch (error) {
-  //             console.error("Invalid WebSocket message:", error);
-  //         }
-  //     });
-
-  //     // Handle player disconnect
-  //     connection.socket.on('close', () => {
-  //         players.delete(playerId);
-  //         console.log(`Player ${playerId} disconnected`);
-  //     });
-  // });
-});
-
-
-// // WebSocket route for real-time Pong game action
-// const players = new Map(); // Store connected players
-
-// fastify.register(async function (fastify) {
-//     fastify.get('/ws', { websocket: true }, (connection, req) => {
-//         // Extract and verify JWT token from the query string
-//         const token = new URL(req.url, 'http://localhost').searchParams.get("token");
-
-//         let user;
-//         try {
-//             user = jwt.verify(token, process.env.JWT_SECRET); // Validate JWT
-//             console.log(`User ${user.id} connected via WebSocket`);
-//         } catch (err) {
-//             console.error("Invalid WebSocket token");
-//             connection.socket.close();
-//             return;
-//         }
-
-//         const playerId = user.id;
-//         players.set(playerId, connection);
-
-//         connection.socket.on('message', (message) => {
-//             const data = JSON.parse(message);
-//             console.log(`Player ${playerId} sent:`, data);
-
-//             // Broadcast to other players
+//             // Broadcast updated position to all other players
 //             for (const [id, playerConn] of players) {
-//                 if (id !== playerId) {
-//                     playerConn.socket.send(JSON.stringify({ event: 'playerMove', data }));
+//                 if (id !== playerId && playerConn.connection.readyState === 1) {
+//                     playerConn.connection.send(JSON.stringify({
+//                         event: 'playerMove',
+//                         playerId,
+//                         position: { x: player.x, y: player.y }
+//                     }));
 //                 }
 //             }
-//         });
+//         }
+//     } catch (error) {
+//         console.error("Invalid WebSocket message:", error);
+//     }
+//   });
 
-//         connection.socket.on('close', () => {
-//             players.delete(playerId);
-//             console.log(`Player ${playerId} disconnected`);
-//         });
-//     });
+//   // Handle player disconnect
+//   connection.on('close', () => {
+//       players.delete(playerId);
+//       console.log(`Player ${playerId} disconnected`);
+//   });
 // });
+
+// Define the WebSocket route
+fastify.get('/ws', { fastifyWebsocket: true }, (connection, req) => {
+  // console.log('connection:', connection);
+  console.log('New WebSocket connection established');
+  connection.socket.on('message', message => {
+    console.log('Received message:', message);
+    // Send a message back to the client
+    connection.socket.send('Hello from Fastify WebSocket server!');
+  });
+
+  // Optionally, handle the close event
+  connection.socket.on('close', () => {
+    console.log('Connection closed');
+  });
+});
 
 // Start the server
 const start = async () => {
