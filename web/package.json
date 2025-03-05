@@ -1,5 +1,5 @@
 {
-  "name": "ft_transcendence",
+  "name": "ft-transcendence",
   "version": "1.0.0",
   "scripts": {
     "compile": "tsc",
