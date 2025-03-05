@@ -1,47 +1,19 @@
-# ft_transcendence - a pong web app
+# ft-transcendence - a pong web app
 
 > A pong app with a heap of add-on features
 
-- Live demo: [https://example.com](https://example.com)
+- Live demo: [https://ft-transcendence.app](https://ft-transcendence.app)
 
-## Build Setup
+## Build and Run
 
-- [something like git pull, setup .env]
-
-## Build
-
-1. Run docker container:
-```bash
-docker compose up --build -d
-```
-
-2. Open site at https://localhost:8443/
-
-### Development
-
-Edit .env to include only these environment variables:
-```sh
-DEV_HTTP_PORT=8080
-```
-
-- `docker compose up -d --build`
-
-### Production
-
-Edit .env to include only these environment variables:
-```sh
-PROD=1
-DOMAIN=<your domain>
-SCHEME=https # can also be http
-```
-
-- `docker compose up -d --build`
+- Set appropriate options in .env (cp from .env.example)
+- make dev or make prod
 
 ## Advanced/Configuration
 
 - [administrative commands regarding app management]
 - [basic steps for configuration]
-- Refer to the [Wiki](https://github.com/cubernetes/ft_transcendence/wiki) for more Documentation
+- Refer to the [Wiki](https://github.com/cubernetes/ft-transcendence/wiki) for more Documentation
 
 ## Demo
 
