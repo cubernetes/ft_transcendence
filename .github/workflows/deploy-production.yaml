@@ -52,8 +52,7 @@ jobs:
              git checkout ${{ secrets.PRODUCTION_BRANCH }} ;                                         \
              git pull --rebase --force ${{ secrets.REMOTE_NAME }} ${{ secrets.PRODUCTION_BRANCH }} ; \
              make clean ;                                                                            \
-             make prod ;                                                                             \
-             exit 0"
+             make prod"
 
       - name: Cleanup
         run: rm -rf ~/.ssh
