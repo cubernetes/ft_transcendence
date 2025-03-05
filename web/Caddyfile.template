@@ -35,9 +35,19 @@
 	}
 }
 
+(websocket) {
+	handle_path /ws {
+		reverse_proxy http://backend:3000 {
+			header_up Connection {>Connection}
+			header_up Upgrade {>Upgrade}
+		}
+	}
+}
+
 # Below variables will be replaced inside caddy-wrapper.sh
 # Default is just http://localhost, so ideal for development (no automatic tls certificate generation)
 $SCHEME://$DOMAIN {
 	import static
 	import api
+	import websocket
 }
