@@ -1,5 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import TournamentService from "../services/tournament.service";
+import { BadRequestError, CustomError } from "../utils/errors";
 
 export default class TournamentController {
   constructor(private tournamentService: TournamentService) {}
@@ -9,7 +10,9 @@ export default class TournamentController {
       const tournaments = await this.tournamentService.findAll();
       return reply.send(tournaments);
     } catch (error) {
-      return reply.status(500).send({ error: "Failed to fetch users" });
+      return error instanceof CustomError
+        ? error.send(reply)
+        : new CustomError(`Failed to fetch all tournaments`).send(reply);
     }
   }
 
@@ -18,16 +21,17 @@ export default class TournamentController {
     reply: FastifyReply
   ) {
     try {
-      const { id } = request.params;
+      const id = Number(request.params.id);
 
-      const tournament = await this.tournamentService.findById(+id); // TODO: Where to handle wrong format
+      if (isNaN(id) || !Number.isInteger(id) || id < 1)
+        throw new BadRequestError("Invalid tournament ID");
+
+      const tournament = await this.tournamentService.findById(id);
       return reply.send(tournament);
     } catch (error) {
-      // TODO: Use different types of errors
-      //   if (error.message === "User not found") {
-      //     return reply.status(404).send({ error: "User not found" });
-      //   }
-      return reply.status(500).send({ error: "Internal server error" });
+      return error instanceof CustomError
+        ? error.send(reply)
+        : new CustomError(`Failed to fetch tournament by ID`).send(reply);
     }
   }
 }

@@ -1,5 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import GameService from "../services/game.service";
+import { BadRequestError, CustomError } from "../utils/errors";
 
 export default class GameController {
   constructor(private gameService: GameService) {}
@@ -9,7 +10,9 @@ export default class GameController {
       const games = await this.gameService.findAll();
       return reply.send(games);
     } catch (error) {
-      return reply.status(500).send({ error: "Failed to fetch games" });
+      return error instanceof CustomError
+        ? error.send(reply)
+        : new CustomError(`Failed to fetch all games`).send(reply);
     }
   }
 
@@ -18,16 +21,17 @@ export default class GameController {
     reply: FastifyReply
   ) {
     try {
-      const { id } = request.params;
+      const id = Number(request.params.id);
 
-      const game = await this.gameService.findById(+id); // TODO: Where to handle wrong format
+      if (isNaN(id) || !Number.isInteger(id) || id < 1)
+        throw new BadRequestError("Invalid user ID");
+
+      const game = await this.gameService.findById(id);
       return reply.send(game);
     } catch (error) {
-      // TODO: Use different types of errors
-      //   if (error.message === "User not found") {
-      //     return reply.status(404).send({ error: "User not found" });
-      //   }
-      return reply.status(500).send({ error: "Internal server error" });
+      return error instanceof CustomError
+        ? error.send(reply)
+        : new CustomError(`Failed to fetch game by ID`).send(reply);
     }
   }
 }
