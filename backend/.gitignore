@@ -2,3 +2,5 @@ node_modules/
 data/database.sqlite
 data/
 dist/
+
+.DS_Store
