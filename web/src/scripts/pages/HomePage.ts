@@ -23,7 +23,7 @@ export function createHomePage(): HTMLElement {
   const ctaButton = document.createElement('a');
   ctaButton.href = '#game';
   ctaButton.className = 'inline-block mt-4 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600';
-  ctaButton.textContent = 'Play Now';
+  ctaButton.textContent = 'Play Now!';
   
   hero.appendChild(heroTitle);
   hero.appendChild(heroText);
