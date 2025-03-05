@@ -1,10 +1,11 @@
 import Fastify, { FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import initDatabase from "./database/index";
+import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
 export default class App {
   private server: FastifyInstance;
-  private db: Awaited<ReturnType<typeof initDatabase>> | null = null;
+  private db: BetterSQLite3Database | null = null;
   private initialized = false;
 
   constructor() {

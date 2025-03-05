@@ -1,17 +1,17 @@
 import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { drizzle, BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import path from "path";
 import { promises as fs } from "fs";
 import { fileURLToPath } from "url";
 
-// Get the current file path (__dirname not available in ES modules)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const initDatabase = async () => {
+const initDatabase = async (): Promise<BetterSQLite3Database> => {
   const DB_DIR = "../../data";
   const DB_NAME = "database.sqlite";
+
+  // Get the current file path (__dirname not available in ES modules)
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
   const DB_DIR_PATH = path.resolve(__dirname, DB_DIR);
 
   // Ensure data directory exists
