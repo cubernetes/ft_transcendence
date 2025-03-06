@@ -1,15 +1,15 @@
 # Build Stage: TypeScript + Webpack
-FROM node:18 AS web-builder
+FROM node:23.9.0-alpine3.21 AS web-builder
+
 WORKDIR /app/
 
 # Install dependencies and build
-COPY ./package.json ./package-lock.json ./
-RUN npm install
+COPY ./package*.json ./
 
-COPY ./tsconfig.json ./webpack.config.js ./
-COPY ./dist/ ./dist/
-COPY ./src/ ./src/
-COPY ./assets/ ./assets/
+RUN npm clean-install
+
+COPY ./ ./
+
 RUN npm run build
 
 # Build Stage: Custom Caddy with Coraza WAF
