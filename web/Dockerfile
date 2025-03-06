@@ -1,12 +1,12 @@
 # Build Stage: TypeScript + Webpack
-FROM node:18 AS web-builder
+FROM node:20-alpine AS web-builder
 
 WORKDIR /app/
 
 # Install dependencies and build
 COPY ./package.json ./package-lock.json ./
 
-RUN npm clean-install
+RUN npm install
 
 COPY . .
 
