@@ -1,5 +1,5 @@
 # Build Stage: TypeScript + Webpack
-FROM node:18 AS web-builder
+FROM node:23.9.0-alpine3.21 AS web-builder
 
 WORKDIR /app/
 
@@ -8,7 +8,7 @@ COPY ./package.json ./package-lock.json ./
 
 RUN npm clean-install
 
-COPY . .
+COPY ./ ./
 
 RUN npm run build
 
