@@ -1,1 +1,7 @@
-@import "tailwindcss";
+/* For tailwindcss v4 */
+/*@import "tailwindcss";*/
+
+/* For tailwindcss v3 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
