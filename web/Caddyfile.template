@@ -40,4 +40,11 @@
 $SCHEME://$DOMAIN {
 	import static
 	import api
+
+	# WebSocket specific matcher and routing
+	@websockets {
+		header Connection *Upgrade*
+		header Upgrade    websocket
+	}
+	reverse_proxy @websockets http://backend:3000
 }
