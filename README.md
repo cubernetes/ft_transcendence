@@ -31,6 +31,11 @@
 - Log management and observability (ELK + Grafana) - Sonia
 - Game statistics also on Blockchain - John
 
+
+## Debug
+- Websockets: Use wscat to connect to frontend (or backend via container IP):
+    wscat -c ws://localhost:8080/ws
+
 ## License
 
 - [CC0 1.0 Universal](COPYING)
