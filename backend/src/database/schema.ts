@@ -1,5 +1,3 @@
-// Pulled with drizzle-kit, maybe automatically generate it during build so no need to mannually update it?
-
 import {
   sqliteTable,
   check,

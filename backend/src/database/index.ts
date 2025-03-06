@@ -42,7 +42,6 @@ const initDatabase = async (): Promise<BetterSQLite3Database> => {
   // If database file doesn't exist, create tables from schema.sql
   try {
     if (!dbExists) {
-      console.log(SCHEMA_PATH, SEED_PATH);
       const schema = await fs.readFile(SCHEMA_PATH, "utf8");
       db.exec(schema);
 
