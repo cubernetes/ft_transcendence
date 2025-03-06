@@ -15,3 +15,16 @@ prod: # Don't forget to set DOMAIN and SCHEME in .env
 clean:
 	$(DC) down
 	$(D) system prune -f # for super pristine cleaning do `prune --all --volume -f`
+
+
+.PHONY: deepclean
+deepclean:
+	$(DC) down -v
+	rm backend/data/database.sqlite
+	@docker ps -aq | xargs -r docker stop || true
+	@docker ps -aq | xargs -r docker rm || true
+	@docker images -q | xargs -r docker rmi || true
+	@docker volume prune -f || true
+	@docker network prune -f || true
+	@docker system prune -a --volumes -f || true
+	@docker compose down -v || true
