@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc --noEmit && node build.js",
-    "watch": "tsc --noEmit && node build.js --watch"
+    "build": "tsc --noEmit && node esbuild.config.js",
+    "watch": "tsc --noEmit && node esbuild.config.js --watch"
   },
   "dependencies": {
     "@fastify/cors": "^11.0.0",

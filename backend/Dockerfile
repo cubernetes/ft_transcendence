@@ -1,4 +1,4 @@
-FROM node:18-alpine AS build
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
@@ -22,8 +22,8 @@ WORKDIR /app
 
 # Copy package files to install dependencies first
 COPY ./package*.json ./
-COPY --from=build /app/dist /app/dist
-COPY ./src/database/*.sql ./dist/
+COPY --from=builder /app/dist /app/dist
+COPY ./src/database/ /app/dist/
 
 RUN npm install --production
 

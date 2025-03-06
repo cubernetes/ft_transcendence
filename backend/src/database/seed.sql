@@ -1,17 +1,17 @@
 -- Seed data for development environment
 
 -- Example data for users table
-INSERT INTO users (username, password_hash, salt, wins, losses) VALUES 
-    ('darren', 'dummy_hash', 'dummy_salt', 5, 2),
-    ('luca', 'dummy_hash', 'dummy_salt', 3, 4),
-    ('timo', 'dummy_hash', 'dummy_salt', 7, 2),
-    ('sonia', 'dummy_hash', 'dummy_salt', 10, 3),
-    ('john', 'dummy_hash', 'dummy_salt', 8, 4),
-    ('ben', 'dummy_hash', 'dummy_salt', 6, 5),
-    ('kars', 'dummy_hash', 'dummy_salt', 4, 6),
-    ('dan', 'dummy_hash', 'dummy_salt', 2, 7),
-    ('lola', 'dummy_hash', 'dummy_salt', 9, 2),
-    ('max', 'dummy_hash', 'dummy_salt', 1, 9);
+INSERT INTO users (username, display_name, password_hash, salt, wins, losses) VALUES 
+    ('darren', 'Darren', 'dummy_hash', 'dummy_salt', 5, 2),
+    ('luca', 'Luca', 'dummy_hash', 'dummy_salt', 3, 4),
+    ('timo', 'Timo', 'dummy_hash', 'dummy_salt', 7, 2),
+    ('sonia', 'Sonia', 'dummy_hash', 'dummy_salt', 10, 3),
+    ('john', 'John', 'dummy_hash', 'dummy_salt', 8, 4),
+    ('ben', 'Ben', 'dummy_hash', 'dummy_salt', 6, 5),
+    ('kars', 'Kars', 'dummy_hash', 'dummy_salt', 4, 6),
+    ('dan', 'Dan', 'dummy_hash', 'dummy_salt', 2, 7),
+    ('lola', 'Lola', 'dummy_hash', 'dummy_salt', 9, 2),
+    ('max', 'Max', 'dummy_hash', 'dummy_salt', 1, 9);
 
 -- Example data for tournaments table
 INSERT INTO tournaments (name, creator_id, winner_id, finished_at) VALUES
@@ -22,17 +22,17 @@ INSERT INTO tournaments (name, creator_id, winner_id, finished_at) VALUES
     ('42 Championship', 8, 3, '2025-02-25 12:00:00');
 
 -- Example data for games table
-INSERT INTO games (tournament_id, player1_id, player2_id, winner_id, player1_score, player2_score, status, finished_at) VALUES
-    (1, 1, 2, 1, 10, 5, 'finished', '2024-03-01 18:30:00'),
-    (1, 3, 4, 4, 8, 7, 'finished', '2024-03-01 19:00:00'),
-    (2, 2, 6, 6, 6, 3, 'finished', '2024-07-15 16:00:00'),
-    (2, 4, 5, 5, 9, 4, 'finished', '2024-07-15 16:30:00'),
-    (3, 1, 7, 7, 6, 5, 'finished', '2024-09-22 20:30:00'),
-    (3, 2, 8, 2, 7, 6, 'finished', '2024-09-22 21:00:00'),
-    (4, 5, 9, 9, 7, 6, 'finished', '2024-12-10 18:15:00'),
-    (4, 7, 8, 8, 10, 3, 'finished', '2024-12-10 18:45:00'),
-    (5, 6, 3, 3, 11, 6, 'finished', '2024-11-28 12:30:00'),
-    (5, 4, 1, 1, 9, 8, 'finished', '2024-11-28 13:00:00');
+INSERT INTO games (tournament_id, player1_id, player2_id, winner_id, player1_score, player2_score, finished_at) VALUES
+    (1, 1, 2, 1, 10, 5, '2024-03-01 18:30:00'),
+    (1, 3, 4, 4, 8, 7, '2024-03-01 19:00:00'),
+    (2, 2, 6, 6, 6, 3, '2024-07-15 16:00:00'),
+    (2, 4, 5, 5, 9, 4, '2024-07-15 16:30:00'),
+    (3, 1, 7, 7, 6, 5, '2024-09-22 20:30:00'),
+    (3, 2, 8, 2, 7, 6, '2024-09-22 21:00:00'),
+    (4, 5, 9, 9, 7, 6, '2024-12-10 18:15:00'),
+    (4, 7, 8, 8, 10, 3, '2024-12-10 18:45:00'),
+    (5, 6, 3, 3, 11, 6, '2024-11-28 12:30:00'),
+    (5, 4, 1, 1, 9, 8, '2024-11-28 13:00:00');
 
 -- Example data for friends table
 INSERT INTO friends (user1_id, user2_id, status) VALUES

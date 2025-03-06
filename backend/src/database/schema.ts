@@ -13,6 +13,7 @@ import { sql } from "drizzle-orm";
 export const users = sqliteTable("users", {
   id: integer().primaryKey({ autoIncrement: true }),
   username: text().notNull(),
+  displayName: text("display_name").notNull(),
   passwordHash: text("password_hash").notNull(),
   salt: text().notNull(),
   totpSecret: text("totp_secret"),
