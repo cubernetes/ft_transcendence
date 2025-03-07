@@ -1,12 +1,12 @@
 import { FastifyInstance } from "fastify";
-import type UserService from "../services/user.service";
 import UserController from "../controllers/user.controller";
+import type { ServiceInstance } from "../services/_index";
 
 const userRoutes = async (
   fastify: FastifyInstance,
-  options: { userService: UserService }
+  options: { service: ServiceInstance }
 ) => {
-  const controller = new UserController(options.userService);
+  const controller = new UserController(options.service.user);
 
   fastify.get("/all", controller.getAllUsers.bind(controller));
   fastify.get("/:id", controller.getUserById.bind(controller));

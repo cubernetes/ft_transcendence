@@ -28,4 +28,3 @@ COPY --from=builder /app/drizzle /app/drizzle
 RUN npm install --production
 
 CMD ["npm", "start"]
-#CMD ["node", "--trace-warnings", "dist/index.js"]

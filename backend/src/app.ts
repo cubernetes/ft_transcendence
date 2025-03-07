@@ -3,65 +3,52 @@ import cors from "@fastify/cors";
 import websocket from "@fastify/websocket";
 import initDatabase from "./model/database";
 import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import userRoutes from "./routes/user.route";
-import gameRoutes from "./routes/game.route";
-import UserService from "./services/user.service";
-import GameService from "./services/game.service";
-import TournamentService from "./services/tournament.service";
-import tournamentRoutes from "./routes/tournament.route";
-import FriendService from "./services/friend.service";
-import friendRoutes from "./routes/friend.route";
-import websocketRoutes from "./websocket/ws.route";
-
+import Service, { ServiceInstance } from "./services/_index";
+import routes from "./routes/_index";
 
 export default class App {
   private server: FastifyInstance;
-  private db: BetterSQLite3Database | null = null;
-  private initialized = false;
+  private db: BetterSQLite3Database;
+  private service: ServiceInstance;
 
   constructor() {
     this.server = Fastify({ logger: true });
+    this.db = initDatabase();
+    this.service = new Service(this.db);
+  }
+
+  private registerRoutes(server: FastifyInstance) {
+    server.register(routes.user, {
+      prefix: "/users",
+      service: this.service,
+    });
+    server.register(routes.game, {
+      prefix: "/games",
+      service: this.service,
+    });
+    server.register(routes.tournament, {
+      prefix: "/tournaments",
+      service: this.service,
+    });
+    server.register(routes.friend, {
+      prefix: "/friends",
+      service: this.service,
+    });
+  }
+
+  private registerCors(server: FastifyInstance) {
+    server.register(cors, { origin: "*" }); // TODO: Use env variable to switch between production & development?
   }
 
   private async init() {
-    if (this.initialized) return;
-
     try {
-      // Initialize database
-      this.db = await initDatabase();
-      
-      // Register WebSocket plugin FIRST
-      this.server.register(websocket, {
-        options: {
-          maxPayload: 1048576, // 1 MiB
-        },
-      });
-
-      // Register CORS
-      this.server.register(cors, { origin: "*" }); // TODO: Use env variable to switch between production & development?
-
-      // Create services
-      const userService = new UserService(this.db);
-      const gameService = new GameService(this.db);
-      const tournamentService = new TournamentService(this.db);
-      const friendService = new FriendService(this.db);
-
-      // Register routes to fastify
-      this.server.register(userRoutes, { prefix: "/users", userService });
-      this.server.register(gameRoutes, { prefix: "/games", gameService });
-      this.server.register(tournamentRoutes, { prefix: "/tournaments", tournamentService, });
-      this.server.register(friendRoutes, { prefix: "/friends", friendService });
-
-      // Register the WebSocket game route
-      // this.server.register(websocketRoutes, { prefix: "/ws" });
-      this.server.register(websocketRoutes);
-
+      this.registerCors(this.server);
+      this.registerRoutes(this.server);
     } catch (error) {
       console.error("Error initializing server:", error);
       // this.server.log.error("Error initializing server:", error);
       process.exit(1);
     }
-    this.initialized = true;
   }
 
   public async start(port: number) {

@@ -1,12 +1,12 @@
 import { FastifyInstance } from "fastify";
-import type FriendService from "../services/friend.service";
+import type { ServiceInstance } from "../services/_index";
 import FriendController from "../controllers/friend.controller";
 
 const friendRoutes = async (
   fastify: FastifyInstance,
-  options: { friendService: FriendService }
+  options: { service: ServiceInstance }
 ) => {
-  const controller = new FriendController(options.friendService);
+  const controller = new FriendController(options.service.friend);
 
   // TODO: Business logic for friends should be reconsidered?
   // Involves auth middleware probably?
