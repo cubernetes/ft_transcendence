@@ -35,6 +35,7 @@
 ## Debug
 - Websockets: Use wscat to connect to frontend (or backend via container IP):
     wscat -c ws://localhost:8080/ws
+    wscat -c localhost:8080/ws
 
 ## License
 

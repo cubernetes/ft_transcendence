@@ -20,7 +20,7 @@ clean:
 .PHONY: deepclean
 deepclean:
 	$(DC) down -v
-	rm backend/data/database.sqlite
+	sudo rm backend/data/database.sqlite
 	@docker ps -aq | xargs -r docker stop || true
 	@docker ps -aq | xargs -r docker rm || true
 	@docker images -q | xargs -r docker rmi || true

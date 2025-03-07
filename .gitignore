@@ -1,8 +1,10 @@
 **/.env
 **/node_modules/
-**/dist/
+**/dist/styles/
+**/dist/bundle.js
 
 backend/data/
 
 **/pnpm-lock.yaml
 **/.DS_Store
+**/.vscode/

@@ -87,7 +87,7 @@ export default class App {
     await this.init();
 
     try {
-      await this.server.listen({ port, host: "0.0.0.0" });
+      await this.server.listen({ port: 3000, host: "0.0.0.0" });
       this.server.log.info(`Server running at port ${port}!`);
     } catch (error) {
       this.server.log.error("Error starting server:", error);
