@@ -31,9 +31,10 @@ services:
     environment:
       - NODE_ENV=development
       - BACKEND_PORT=${BACKEND_PORT:?Error, BACKEND_PORT environment variable must be set (see .env)}
-      - DB_PATH=/app/drizzle/db.sqlite
+      - DB_PATH=/app/backend/drizzle/db.sqlite
     volumes:
-      - ./backend/drizzle:/app/drizzle
+      - ./backend/drizzle:/app/backend/drizzle
+
 volumes:
   caddy_data:
 

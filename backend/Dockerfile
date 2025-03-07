@@ -7,7 +7,6 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-
 FROM node:20-alpine AS production
 
 # Install build dependencies for bcrypt and other native modules
