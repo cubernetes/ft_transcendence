@@ -71,7 +71,6 @@ export default class UserController {
         username,
         displayName,
         passwordHash: hashedPassword,
-        salt: "salt", // TODO: Check lib for hash
       };
       await this.userService.create(user);
       return reply.code(201).send({ message: "User registered successfully" });

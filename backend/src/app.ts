@@ -11,6 +11,8 @@ import TournamentService from "./services/tournament.service";
 import tournamentRoutes from "./routes/tournament.route";
 import FriendService from "./services/friend.service";
 import friendRoutes from "./routes/friend.route";
+import websocketRoutes from "./websocket/ws.route";
+
 
 export default class App {
   private server: FastifyInstance;
@@ -50,32 +52,35 @@ export default class App {
       this.server.register(tournamentRoutes, { prefix: "/tournaments", tournamentService, });
       this.server.register(friendRoutes, { prefix: "/friends", friendService });
 
-      // WebSocket route
-      this.server.register(async function (fastify) {
-        fastify.get('/ws', { websocket: true },
-          (socket /* WebSocket */, _req /* FastifyRequest */) => {
-            fastify.log.info("New WebSocket connection");
+      // Register the WebSocket game route
+      this.server.register(websocketRoutes, { prefix: "/ws" });
 
-            socket.on('message', message => {
-              // const text = message.toString("utf-8");  // Convert Buffer to string safely
-              fastify.log.info(`Received: ${message.toString()}`);
-              message.toString() === 'hi from client'
-              socket.send(`hi from server`);
-            });
-            
-            socket.on('ping', () => {
-              fastify.log.info("Ping received!");
-              socket.pong();
-            });
+      // // WebSocket route
+      // this.server.register(async function (fastify) {
+      //   fastify.get('/ws', { websocket: true },
+      //     (socket /* WebSocket */, _req /* FastifyRequest */) => {
+      //       fastify.log.info("New WebSocket connection");
 
-            socket.on("close", () => {
-              fastify.log.info("WebSocket socket closed");
-            });
+      //       socket.on('message', message => {
+      //         // const text = message.toString("utf-8");  // Convert Buffer to string safely
+      //         fastify.log.info(`Received: ${message.toString()}`);
+      //         message.toString() === 'hi from client'
+      //         socket.send(`hi from server`);
+      //       });
             
-            // Send initial message to verify the socket
-            socket.send("Welcome to the WebSocket server!");
-        });
-      });
+      //       socket.on('ping', () => {
+      //         fastify.log.info("Ping received!");
+      //         socket.pong();
+      //       });
+
+      //       socket.on("close", () => {
+      //         fastify.log.info("WebSocket socket closed");
+      //       });
+            
+      //       // Send initial message to verify the socket
+      //       socket.send("Welcome to the WebSocket server!");
+      //   });
+      // });
     } catch (error) {
       this.server.log.error("Error initializing server:", error);
       process.exit(1);

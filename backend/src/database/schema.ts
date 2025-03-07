@@ -15,7 +15,6 @@ export const users = sqliteTable("users", {
   username: text().notNull(),
   displayName: text("display_name").notNull(),
   passwordHash: text("password_hash").notNull(),
-  salt: text().notNull(),
   totpSecret: text("totp_secret"),
   avatarUrl: text("avatar_url").default("/assets/default-avatar.png"),
   wins: integer().default(0),

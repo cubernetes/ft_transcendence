@@ -1,17 +1,17 @@
 -- Seed data for development environment
 
 -- Example data for users table
-INSERT INTO users (username, display_name, password_hash, salt, wins, losses) VALUES 
-    ('darren', 'Darren', 'dummy_hash', 'dummy_salt', 5, 2),
-    ('luca', 'Luca', 'dummy_hash', 'dummy_salt', 3, 4),
-    ('timo', 'Timo', 'dummy_hash', 'dummy_salt', 7, 2),
-    ('sonia', 'Sonia', 'dummy_hash', 'dummy_salt', 10, 3),
-    ('john', 'John', 'dummy_hash', 'dummy_salt', 8, 4),
-    ('ben', 'Ben', 'dummy_hash', 'dummy_salt', 6, 5),
-    ('kars', 'Kars', 'dummy_hash', 'dummy_salt', 4, 6),
-    ('dan', 'Dan', 'dummy_hash', 'dummy_salt', 2, 7),
-    ('lola', 'Lola', 'dummy_hash', 'dummy_salt', 9, 2),
-    ('max', 'Max', 'dummy_hash', 'dummy_salt', 1, 9);
+INSERT INTO users (username, display_name, password_hash, wins, losses) VALUES 
+    ('darren', 'Darren', 'dummy_hash', 5, 2),
+    ('luca', 'Luca', 'dummy_hash', 3, 4),
+    ('timo', 'Timo', 'dummy_hash', 7, 2),
+    ('sonia', 'Sonia', 'dummy_hash', 10, 3),
+    ('john', 'John', 'dummy_hash', 8, 4),
+    ('ben', 'Ben', 'dummy_hash', 6, 5),
+    ('kars', 'Kars', 'dummy_hash', 4, 6),
+    ('dan', 'Dan', 'dummy_hash', 2, 7),
+    ('lola', 'Lola', 'dummy_hash', 9, 2),
+    ('max', 'Max', 'dummy_hash', 1, 9);
 
 -- Example data for tournaments table
 INSERT INTO tournaments (name, creator_id, winner_id, finished_at) VALUES

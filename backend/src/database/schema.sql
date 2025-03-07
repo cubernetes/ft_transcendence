@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS users (
     username TEXT UNIQUE NOT NULL,
     display_name TEXT NOT NULL,
     password_hash TEXT NOT NULL,
-    salt TEXT NOT NULL,
     totp_secret TEXT,
     avatar_url TEXT DEFAULT '/assets/default-avatar.png',
     wins INTEGER DEFAULT 0,
