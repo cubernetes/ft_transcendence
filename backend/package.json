@@ -11,16 +11,16 @@
   "dependencies": {
     "@fastify/cors": "^11.0.0",
     "@fastify/websocket": "^11.0.2",
+    "@fastify/jwt": "^9.0.4",
     "bcrypt": "^5.1.1",
     "better-sqlite3": "^11.8.1",
     "drizzle-orm": "^0.40.0",
-    "fastify": "^5.2.1",
-    "jsonwebtoken": "^9.0.2"
+    "fastify": "^5.2.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/better-sqlite3": "^7.6.12",
-    "@types/jsonwebtoken": "^9.0.6",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20.11.24",
     "@types/ws": "^8.18.0",
     "drizzle-kit": "^0.30.5",

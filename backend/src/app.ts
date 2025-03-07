@@ -5,6 +5,7 @@ import initDatabase from "./models/database";
 import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import Service, { ServiceInstance } from "./services";
 import routes, { Route } from "./routes";
+import jwt from "@fastify/jwt";
 
 export default class App {
   private db: BetterSQLite3Database;
@@ -14,10 +15,10 @@ export default class App {
   constructor() {
     this.db = initDatabase();
     this.server = Fastify({ logger: true });
-    this.service = new Service(this.db);
+    this.service = new Service(this.db, this.server);
   }
 
-  private register(route: Route, prefix: string) {
+  private registerRoute(route: Route, prefix: string) {
     this.server.register(route, {
       prefix,
       service: this.service,
@@ -25,10 +26,10 @@ export default class App {
   }
 
   private registerRoutes() {
-    this.register(routes.user, "/users");
-    this.register(routes.game, "/games");
-    this.register(routes.tournament, "/tournaments");
-    this.register(routes.friend, "/friends");
+    this.registerRoute(routes.user, "/users");
+    this.registerRoute(routes.game, "/games");
+    this.registerRoute(routes.tournament, "/tournaments");
+    this.registerRoute(routes.friend, "/friends");
   }
 
   private registerCors() {
@@ -36,13 +37,23 @@ export default class App {
     this.server.register(cors, { origin: "*" });
   }
 
+  private registerJwt() {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) throw new Error("JWT_SECRET environment variable is required");
+
+    this.server.register(jwt, {
+      secret,
+    });
+  }
+
   private async init() {
     try {
       this.registerCors();
+      this.registerJwt();
       this.registerRoutes();
     } catch (error) {
       console.error("Error initializing server:", error);
-      // this.server.log.error("Error initializing server:", error);
+      this.server.log.error("Error initializing server:", error);
       process.exit(1);
     }
   }

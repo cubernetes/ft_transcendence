@@ -2,36 +2,33 @@ import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
 import { users } from "../models/schema";
 import { CustomError, NotFoundError } from "../utils/errors";
+import { User, UserInsert } from "../models/types";
 
 export default class UserService {
-  private db: BetterSQLite3Database;
+  constructor(private readonly db: BetterSQLite3Database) {}
 
-  constructor(db: BetterSQLite3Database) {
-    this.db = db;
-  }
-
-  async findAll() {
+  async findAll(): Promise<User[]> {
     try {
       return await this.db.select().from(users);
     } catch (error) {
-      console.error("Error fetching all users:", error);
-      throw new CustomError("Failed to fetch users");
+      console.error(`Error fetching all users:`, error);
+      throw new CustomError(`Failed to fetch users`);
     }
   }
 
-  async findById(id: number) {
+  async findById(id: number): Promise<User> {
     try {
       const user = await this.db.select().from(users).where(eq(users.id, id));
       if (!user || user.length === 0) throw new NotFoundError("User not found");
 
       return user[0];
     } catch (error) {
-      console.error(`Error fetching user ${id}:`, error);
+      console.error(`Error fetching user ${id}: `, error);
       throw new CustomError(`Failed to find user by id ${id}`);
     }
   }
 
-  async findByUsername(username: string) {
+  async findByUsername(username: string): Promise<User> {
     try {
       const user = await this.db
         .select()
@@ -46,7 +43,7 @@ export default class UserService {
     }
   }
 
-  async create(userData: Omit<typeof users.$inferInsert, "id" | "createdAt">) {
+  async create(userData: UserInsert): Promise<User> {
     try {
       // TODO: Check if database validation (no dup name, etc.) is required here
       const result = await this.db.insert(users).values(userData);
@@ -57,7 +54,7 @@ export default class UserService {
     }
   }
 
-  async update(id: number, userData: Partial<typeof users.$inferInsert>) {
+  async update(id: number, userData: Partial<UserInsert>) {
     try {
       // TODO: Obviously some validation logic on other layers
       await this.db.update(users).set(userData).where(eq(users.id, id));

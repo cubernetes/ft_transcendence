@@ -8,6 +8,13 @@
       "when": 1741262718675,
       "tag": "0000_lovely_overlord",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1741322734139,
+      "tag": "0001_watery_sentinel",
+      "breakpoints": true
     }
   ]
 }

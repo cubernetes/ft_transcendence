@@ -1,24 +1,65 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import UserService from "../services/user.service";
-import {
-  BadRequestError,
-  CustomError,
-  UnauthorizedError,
-} from "../utils/errors";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import AuthService from "../services/auth.service";
+import { BadRequestError, CustomError } from "../utils/errors";
+import { UserLoginBody, UserInsertBody } from "../models/types";
 
 export default class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
 
-  async getAllUsers(_request: FastifyRequest, reply: FastifyReply) {
+  async register(
+    request: FastifyRequest<{ Body: UserInsertBody }>,
+    reply: FastifyReply
+  ) {
+    try {
+      const { username, password, displayName } = request.body;
+
+      const user = await this.authService.register(
+        username,
+        password,
+        displayName
+      );
+      return reply
+        .code(201)
+        .send({ user, message: `User registered successfully` });
+    } catch (error) {
+      return error instanceof CustomError
+        ? error.send(reply)
+        : new CustomError(`Failed to register user`).send(reply);
+    }
+  }
+
+  async login(
+    request: FastifyRequest<{ Body: UserLoginBody }>,
+    reply: FastifyReply
+  ) {
+    try {
+      const { username, password } = request.body;
+      const user = await this.authService.validateCredentials(
+        username,
+        password
+      );
+
+      const token = this.authService.generateToken(user.id, user.username);
+      return reply.send({ token, message: `Login successful` });
+    } catch (error) {
+      return error instanceof CustomError
+        ? error.send(reply)
+        : new CustomError(`Login failed`).send(reply);
+    }
+  }
+
+  async getAllUsers(_: FastifyRequest, reply: FastifyReply) {
     try {
       const users = await this.userService.findAll();
       return reply.send(users);
     } catch (error) {
       return error instanceof CustomError
         ? error.send(reply)
-        : new CustomError("Failed to fetch all users").send(reply);
+        : new CustomError(`Failed to fetch all users`).send(reply);
     }
   }
 
@@ -39,79 +80,5 @@ export default class UserController {
         ? error.send(reply)
         : new CustomError(`Failed to fetch user by ID`).send(reply);
     }
-  }
-
-  async register(
-    request: FastifyRequest<{
-      Body: {
-        username: string;
-        password: string;
-        displayName: string;
-      };
-    }>,
-    reply: FastifyReply
-  ) {
-    const { username, password, displayName } = request.body;
-
-    // Add validation step
-    if (!username || !password || !displayName)
-      return new BadRequestError("Missing fields").send(reply);
-
-    // Check if user already exists
-    const existingUser = await this.userService.findByUsername(username);
-    if (existingUser)
-      return new BadRequestError("Username already taken").send(reply);
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Insert new user into the database
-    try {
-      const user = {
-        username,
-        displayName,
-        passwordHash: hashedPassword,
-      };
-      await this.userService.create(user);
-      return reply.code(201).send({ message: "User registered successfully" });
-    } catch (error) {
-      return error instanceof CustomError
-        ? error.send(reply)
-        : new CustomError(`Failed to register user`).send(reply);
-    }
-  }
-
-  // TODO: Need to look into this more, only copied from js version so far
-  async login(
-    request: FastifyRequest<{
-      Body: {
-        username: string;
-        password: string;
-      };
-    }>,
-    reply: FastifyReply
-  ) {
-    const { username, password } = request.body;
-
-    // Validate credentials
-    if (!username || !password)
-      return new BadRequestError("Missing fields").send(reply);
-
-    // Fetch user from the database
-    const user = await this.userService.findByUsername(username);
-    if (!user || !(await bcrypt.compare(password, user.passwordHash)))
-      return new UnauthorizedError("Invalid credentials").send(reply);
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: user.id, username: user.username },
-      // This env doesn't exist currently, so using place HOLDER. TODO: fix!
-      // process.env.JWT_SECRET,
-      "placeholder",
-      { expiresIn: "1h" }
-    );
-
-    // Return the token
-    return reply.send({ token, message: "Login successful" });
   }
 }

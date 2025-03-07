@@ -6,7 +6,10 @@ const userRoutes = async (
   fastify: FastifyInstance,
   options: { service: ServiceInstance }
 ) => {
-  const controller = new UserController(options.service.user);
+  const controller = new UserController(
+    options.service.auth,
+    options.service.user
+  );
 
   fastify.get("/all", controller.getAllUsers.bind(controller));
   fastify.get("/:id", controller.getUserById.bind(controller));

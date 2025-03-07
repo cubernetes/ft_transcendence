@@ -7,31 +7,26 @@ export const seed = async (db: BetterSQLite3Database) => {
       username: "Timo",
       displayName: "Alice",
       passwordHash: "123",
-      salt: "123",
     },
     {
       username: "Darren",
       displayName: "Bob",
       passwordHash: "123",
-      salt: "123",
     },
     {
       username: "Ben",
       displayName: "Bob",
       passwordHash: "123",
-      salt: "123",
     },
     {
       username: "John",
       displayName: "Bob",
       passwordHash: "123",
-      salt: "123",
     },
     {
       username: "Sonia",
       displayName: "Bob",
       passwordHash: "123",
-      salt: "123",
     },
   ]);
 };
