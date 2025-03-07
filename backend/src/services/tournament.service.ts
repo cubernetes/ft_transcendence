@@ -1,6 +1,6 @@
 import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
-import { tournaments } from "../model/schema";
+import { tournaments } from "../models/schema";
 
 export default class TournamentService {
   private db: BetterSQLite3Database;

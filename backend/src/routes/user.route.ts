@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import UserController from "../controllers/user.controller";
-import type { ServiceInstance } from "../services/_index";
+import type { ServiceInstance } from "../services";
 
 const userRoutes = async (
   fastify: FastifyInstance,

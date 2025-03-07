@@ -1,6 +1,6 @@
 import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
-import { users } from "../model/schema";
+import { users } from "../models/schema";
 import { CustomError, NotFoundError } from "../utils/errors";
 
 export default class UserService {

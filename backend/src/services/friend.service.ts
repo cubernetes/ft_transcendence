@@ -1,6 +1,6 @@
 import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq, or, and } from "drizzle-orm";
-import { friends } from "../model/schema";
+import { friends } from "../models/schema";
 import { CustomError } from "../utils/errors";
 
 export default class FriendService {

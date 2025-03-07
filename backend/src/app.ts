@@ -1,49 +1,45 @@
 import Fastify, { FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import websocket from "@fastify/websocket";
-import initDatabase from "./model/database";
+import initDatabase from "./models/database";
 import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import Service, { ServiceInstance } from "./services/_index";
-import routes from "./routes/_index";
+import Service, { ServiceInstance } from "./services";
+import routes, { Route } from "./routes";
 
 export default class App {
-  private server: FastifyInstance;
   private db: BetterSQLite3Database;
+  private server: FastifyInstance;
   private service: ServiceInstance;
 
   constructor() {
-    this.server = Fastify({ logger: true });
     this.db = initDatabase();
+    this.server = Fastify({ logger: true });
     this.service = new Service(this.db);
   }
 
-  private registerRoutes(server: FastifyInstance) {
-    server.register(routes.user, {
-      prefix: "/users",
-      service: this.service,
-    });
-    server.register(routes.game, {
-      prefix: "/games",
-      service: this.service,
-    });
-    server.register(routes.tournament, {
-      prefix: "/tournaments",
-      service: this.service,
-    });
-    server.register(routes.friend, {
-      prefix: "/friends",
+  private register(route: Route, prefix: string) {
+    this.server.register(route, {
+      prefix,
       service: this.service,
     });
   }
 
-  private registerCors(server: FastifyInstance) {
-    server.register(cors, { origin: "*" }); // TODO: Use env variable to switch between production & development?
+  private registerRoutes() {
+    this.register(routes.user, "/users");
+    this.register(routes.game, "/games");
+    this.register(routes.tournament, "/tournaments");
+    this.register(routes.friend, "/friends");
+  }
+
+  private registerCors() {
+    // TODO: Use env variable to switch between production & development?
+    this.server.register(cors, { origin: "*" });
   }
 
   private async init() {
     try {
-      this.registerCors(this.server);
-      this.registerRoutes(this.server);
+      this.registerCors();
+      this.registerRoutes();
     } catch (error) {
       console.error("Error initializing server:", error);
       // this.server.log.error("Error initializing server:", error);

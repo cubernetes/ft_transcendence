@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import type { ServiceInstance } from "../services/_index";
+import type { ServiceInstance } from "../services";
 import FriendController from "../controllers/friend.controller";
 
 const friendRoutes = async (
