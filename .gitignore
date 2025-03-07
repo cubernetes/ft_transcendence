@@ -1,10 +1,11 @@
-**/.env
-**/node_modules/
-**/dist/styles/
-**/dist/bundle.js
+.env
+node_modules/
+dist/styles/
+dist/bundle.js
 
 backend/data/
 
-**/pnpm-lock.yaml
-**/.DS_Store
-**/.vscode/
+pnpm-lock.yaml
+.DS_Store
+.vscode/
+compile_commands.json
