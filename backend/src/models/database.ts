@@ -1,7 +1,7 @@
 import Database from "better-sqlite3";
 import { drizzle, BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import { seed } from "./seed";
+// import { seed } from "./seed";
 import path from "path";
 import fs from "fs";
 
@@ -35,7 +35,7 @@ const initDatabase = (): BetterSQLite3Database => {
     });
 
     // Seed data in development
-    if (process.env.NODE_ENV === "development") seed(db);
+    // if (process.env.NODE_ENV === "development") seed(db);
 
     console.log(`Database initialized successfully at ${process.env.DB_PATH}`);
     return db;

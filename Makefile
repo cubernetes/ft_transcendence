@@ -21,7 +21,7 @@ prod: # Don't forget to set DOMAIN and SCHEME in .env
 
 .PHONY: clean
 clean:
-	$(DC) down
+	HTTP_PORT=$(DEV_HTTP_PORT) HTTPS_PORT=$(DEV_HTTPS_PORT) DOMAINS=$(DEV_DOMAINS) $(DC) down
 	$(D) system prune -f # for super pristine cleaning do `prune --all --volume -f`
 
 
