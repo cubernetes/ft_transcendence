@@ -5,16 +5,18 @@ D := docker
 
 .PHONY: dev
 dev:
-	HTTP_PORT=8080 \
-	HTTPS_PORT=8443 \
-	DOMAIN=172.31.45.75 \
-	SCHEME=http \
+	HTTP_PORT=$(DEV_HTTP_PORT) \
+	HTTPS_PORT=$(DEV_HTTPS_PORT) \
+	DOMAIN=$(DEV_DOMAIN) \
+	SCHEME=$(DEV_SCHEME) \
 	$(DC) up -d --build
 
 .PHONY: prod
 prod: # Don't forget to set DOMAIN and SCHEME in .env
-	HTTP_PORT=80 \
-	HTTPS_PORT=443 \
+	HTTP_PORT=$(PROD_HTTP_PORT) \
+	HTTPS_PORT=$(PROD_HTTPS_PORT) \
+	DOMAIN=$(PROD_DOMAIN) \
+	SCHEME=$(PROD_SCHEME) \
 	$(DC) up -d --build
 
 .PHONY: clean
