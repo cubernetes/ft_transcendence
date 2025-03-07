@@ -14,14 +14,13 @@ services:
     volumes:
       - "caddy_data:/srv/.local/share/caddy/"
     environment:
-      - DOMAIN=${DOMAIN:-}
-      - SCHEME=${SCHEME:-}
-      - PROD=${PROD:-0}
+      - DOMAIN=${DOMAIN:?Error, DOMAIN environment variable must be set (e.g. in .env)}
+      - SCHEME=${SCHEME:?Error, SCHEME environment variable must be set (e.g. in .env)}
     develop:
-      watch: # will reload caddy when changing Caddyfile.template in the host system
-        - path: ./web/Caddyfile.template
+      watch: # will reload caddy when changing Caddyfile in the host system
+        - path: ./web/Caddyfile
           action: rebuild
-          target: /etc/caddy/Caddyfile.template
+          target: /etc/caddy/Caddyfile
 
   backend:
     build:

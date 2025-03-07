@@ -28,14 +28,10 @@ RUN adduser -h /srv/ -S caddy -G caddy
 
 FROM alpine:3.21.3
 
-# needed for envsubsts in caddy-wrapper.sh
-RUN apk --no-cache add gettext
-
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
-COPY                ./caddy-wrapper.sh /caddy-wrapper.sh
-COPY                ./Caddyfile.template /etc/caddy/Caddyfile.template
+COPY                ./Caddyfile /etc/caddy/Caddyfile
 
 RUN rm -rf /srv/ && mkdir -p /srv/.local/share/caddy/
 
@@ -49,8 +45,10 @@ WORKDIR /srv/
 EXPOSE 8080
 EXPOSE 8443
 
+VOLUME ["/srv/.local/share/caddy/"]
+
 USER caddy
 
-ENTRYPOINT ["/caddy-wrapper.sh"]
-
-CMD ["run"]
+CMD ["/usr/bin/caddy", "run", \
+	"--adapter", "caddyfile", \
+	"--config", "/etc/caddy/Caddyfile"]
