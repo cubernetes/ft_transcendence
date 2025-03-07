@@ -1,6 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import FriendService from "../services/friend.service";
-import { BadRequestError, CustomError } from "../utils/errors";
+import { CustomError } from "../utils/errors";
+import { validateId } from "../utils/validator";
 
 export default class FriendController {
   constructor(private friendService: FriendService) {}
@@ -10,11 +11,7 @@ export default class FriendController {
     reply: FastifyReply
   ) {
     try {
-      const id = Number(request.params.id);
-
-      if (isNaN(id) || !Number.isInteger(id) || id < 1)
-        throw new BadRequestError("Invalid user ID");
-
+      const id = validateId(request.params.id);
       const friends = await this.friendService.findAllFriendshipsById(id);
       return reply.send(friends);
     } catch (error) {

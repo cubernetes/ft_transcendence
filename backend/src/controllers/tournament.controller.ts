@@ -1,6 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import TournamentService from "../services/tournament.service";
-import { BadRequestError, CustomError } from "../utils/errors";
+import { CustomError } from "../utils/errors";
+import { validateId } from "../utils/validator";
 
 export default class TournamentController {
   constructor(private tournamentService: TournamentService) {}
@@ -21,11 +22,7 @@ export default class TournamentController {
     reply: FastifyReply
   ) {
     try {
-      const id = Number(request.params.id);
-
-      if (isNaN(id) || !Number.isInteger(id) || id < 1)
-        throw new BadRequestError("Invalid tournament ID");
-
+      const id = validateId(request.params.id);
       const tournament = await this.tournamentService.findById(id);
       return reply.send(tournament);
     } catch (error) {

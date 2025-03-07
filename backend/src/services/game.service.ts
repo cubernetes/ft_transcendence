@@ -3,18 +3,14 @@ import { eq } from "drizzle-orm";
 import { games } from "../models/schema";
 
 export default class GameService {
-  private db: BetterSQLite3Database;
-
-  constructor(db: BetterSQLite3Database) {
-    this.db = db;
-  }
+  constructor(private readonly db: BetterSQLite3Database) {}
 
   async findAll() {
     try {
       return await this.db.select().from(games);
     } catch (error) {
-      console.error("Error fetching all games:", error);
-      throw new Error("Failed to fetch games");
+      console.error(`Error fetching all games:`, error);
+      throw new Error(`Failed to fetch games`);
     }
   }
 
@@ -22,7 +18,7 @@ export default class GameService {
     try {
       const game = await this.db.select().from(games).where(eq(games.id, id));
       if (!game || game.length === 0) {
-        throw new Error("Game not found");
+        throw new Error(`Game not found`);
       }
       return game[0];
     } catch (error) {

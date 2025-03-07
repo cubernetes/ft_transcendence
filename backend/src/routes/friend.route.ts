@@ -11,9 +11,9 @@ const friendRoutes = async (
   // TODO: Business logic for friends should be reconsidered?
   // Involves auth middleware probably?
   // But will refactor for now
-  fastify.get("/:id", controller.getFriendsById.bind(controller));
-  fastify.post("/", controller.postFriendRequest.bind(controller));
-  fastify.put("/accept", controller.acceptFriendRequest.bind(controller));
+  fastify.get(`/:id`, controller.getFriendsById.bind(controller));
+  fastify.post(`/`, controller.postFriendRequest.bind(controller));
+  fastify.put(`/accept`, controller.acceptFriendRequest.bind(controller));
 };
 
 export default friendRoutes;

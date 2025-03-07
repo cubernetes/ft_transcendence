@@ -22,8 +22,8 @@ export default class Service implements ServiceInstance {
   public auth: AuthService;
 
   constructor(
-    private db: BetterSQLite3Database,
-    private fastify: FastifyInstance
+    private readonly db: BetterSQLite3Database,
+    private readonly fastify: FastifyInstance
   ) {
     this.user = new UserService(this.db);
     this.game = new GameService(this.db);

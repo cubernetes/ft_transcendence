@@ -3,18 +3,14 @@ import { eq } from "drizzle-orm";
 import { tournaments } from "../models/schema";
 
 export default class TournamentService {
-  private db: BetterSQLite3Database;
-
-  constructor(db: BetterSQLite3Database) {
-    this.db = db;
-  }
+  constructor(private readonly db: BetterSQLite3Database) {}
 
   async findAll() {
     try {
       return await this.db.select().from(tournaments);
     } catch (error) {
-      console.error("Error fetching all tournaments:", error);
-      throw new Error("Failed to fetch tournaments");
+      console.error(`Error fetching all tournaments:`, error);
+      throw new Error(`Failed to fetch tournaments`);
     }
   }
 
@@ -25,7 +21,7 @@ export default class TournamentService {
         .from(tournaments)
         .where(eq(tournaments.id, id));
       if (!tournament || tournament.length === 0) {
-        throw new Error("Tournament not found");
+        throw new Error(`Tournament not found`);
       }
       return tournament[0];
     } catch (error) {

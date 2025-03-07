@@ -8,8 +8,8 @@ const tournamentRoutes = async (
 ) => {
   const controller = new TournamentController(options.service.tournament);
 
-  fastify.get("/all", controller.getAllTournaments.bind(controller));
-  fastify.get("/:id", controller.getTournamentById.bind(controller));
+  fastify.get(`/all`, controller.getAllTournaments.bind(controller));
+  fastify.get(`/:id`, controller.getTournamentById.bind(controller));
 };
 
 export default tournamentRoutes;

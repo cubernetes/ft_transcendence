@@ -10,7 +10,7 @@ import jwt from "@fastify/jwt";
 export default class App {
   private db: BetterSQLite3Database;
   private server: FastifyInstance;
-  private service: ServiceInstance;
+  private service!: ServiceInstance;
 
   constructor() {
     this.db = initDatabase();
@@ -18,6 +18,12 @@ export default class App {
     this.service = new Service(this.db, this.server);
   }
 
+  /**
+   * Test maybe using JSDoc, probably easier to generate docs later for api.
+   * @param route
+   * @param prefix
+   * @returns
+   */
   private registerRoute(route: Route, prefix: string) {
     this.server.register(route, {
       prefix,
@@ -25,11 +31,14 @@ export default class App {
     });
   }
 
+  /**
+   * Register all routes here.
+   */
   private registerRoutes() {
-    this.registerRoute(routes.user, "/users");
-    this.registerRoute(routes.game, "/games");
-    this.registerRoute(routes.tournament, "/tournaments");
-    this.registerRoute(routes.friend, "/friends");
+    this.registerRoute(routes.user, `/users`);
+    this.registerRoute(routes.game, `/games`);
+    this.registerRoute(routes.tournament, `/tournaments`);
+    this.registerRoute(routes.friend, `/friends`);
   }
 
   private registerCors() {
@@ -39,11 +48,10 @@ export default class App {
 
   private registerJwt() {
     const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error("JWT_SECRET environment variable is required");
+    if (!secret) throw new Error(`JWT_SECRET environment variable is required`);
 
-    this.server.register(jwt, {
-      secret,
-    });
+    // TODO: Add more options here for JWT, see: https://github.com/fastify/fastify-jwt
+    this.server.register(jwt, { secret });
   }
 
   private async init() {
@@ -59,13 +67,15 @@ export default class App {
   }
 
   public async start(port: number) {
-    await this.init();
-
     try {
-      await this.server.listen({ port: 3000, host: "0.0.0.0" });
+      await this.init();
+      await this.server.listen({ port, host: "0.0.0.0" });
       this.server.log.info(`Server running at port ${port}!`);
     } catch (error) {
       this.server.log.error("Error starting server:", error);
+      if (error instanceof Error) {
+        this.server.log.error(error.stack);
+      }
       process.exit(1);
     }
   }

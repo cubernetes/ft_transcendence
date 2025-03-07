@@ -19,7 +19,7 @@ export default class UserService {
   async findById(id: number): Promise<User> {
     try {
       const user = await this.db.select().from(users).where(eq(users.id, id));
-      if (!user || user.length === 0) throw new NotFoundError("User not found");
+      if (!user || user.length === 0) throw new NotFoundError(`User not found`);
 
       return user[0];
     } catch (error) {
@@ -34,7 +34,7 @@ export default class UserService {
         .select()
         .from(users)
         .where(eq(users.username, username));
-      if (!user || user.length === 0) throw new NotFoundError("User not found");
+      if (!user || user.length === 0) throw new NotFoundError(`User not found`);
 
       return user[0];
     } catch (error) {
@@ -49,8 +49,8 @@ export default class UserService {
       const result = await this.db.insert(users).values(userData);
       return this.findById(Number(result.lastInsertRowid));
     } catch (error) {
-      console.error("Error creating user:", error);
-      throw new CustomError("Failed to create user");
+      console.error(`Error creating user:`, error);
+      throw new CustomError(`Failed to create user`);
     }
   }
 
@@ -61,7 +61,7 @@ export default class UserService {
       return this.findById(id);
     } catch (error) {
       console.error(`Error updating user ${id}:`, error);
-      throw new CustomError("Failed to update user");
+      throw new CustomError(`Failed to update user`);
     }
   }
 

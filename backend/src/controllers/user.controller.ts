@@ -1,8 +1,9 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import UserService from "../services/user.service";
 import AuthService from "../services/auth.service";
-import { BadRequestError, CustomError } from "../utils/errors";
+import { CustomError } from "../utils/errors";
 import { UserLoginBody, UserInsertBody } from "../models/types";
+import { validateId } from "../utils/validator";
 
 export default class UserController {
   constructor(
@@ -68,11 +69,7 @@ export default class UserController {
     reply: FastifyReply
   ) {
     try {
-      const id = Number(request.params.id);
-
-      if (isNaN(id) || !Number.isInteger(id) || id < 1)
-        throw new BadRequestError("Invalid user ID");
-
+      const id = validateId(request.params.id);
       const user = await this.userService.findById(id);
       return reply.send(user);
     } catch (error) {

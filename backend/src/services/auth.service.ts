@@ -32,11 +32,11 @@ export default class AuthService {
    */
   async validateCredentials(username: string, password: string) {
     if (!username || !password)
-      throw new BadRequestError("Missing credentials");
+      throw new BadRequestError(`Missing credentials`);
 
     const user = await this.userService.findByUsername(username);
     if (!user || !(await bcrypt.compare(password, user.passwordHash)))
-      throw new UnauthorizedError("Invalid credentials");
+      throw new UnauthorizedError(`Invalid credentials`);
 
     return user;
   }
@@ -53,26 +53,14 @@ export default class AuthService {
    */
   verifyToken(token: string): JwtPayload {
     return this.fastify.jwt.verify(token);
-    // try {
-    //   return this.fastify.jwt.verify(
-    //     token,
-    //     this.jwtConfig.secret
-    //   ) as JwtPayload;
-    // } catch (error) {
-    //   if (error instanceof this.fastify.jwt.TokenExpiredError)
-    //     throw new UnauthorizedError("Token expired");
-    //   if (error instanceof this.fastify.jwt.JsonWebTokenError)
-    //     throw new UnauthorizedError("Invalid token");
-    //   throw error;
-    // }
   }
 
   async register(username: string, password: string, displayName: string) {
     if (!username || !password || !displayName)
-      throw new BadRequestError("Missing fields");
+      throw new BadRequestError(`Missing fields`);
 
     const existingUser = await this.userService.findByUsername(username);
-    if (existingUser) throw new BadRequestError("Username already taken");
+    if (existingUser) throw new BadRequestError(`Username already taken`);
 
     const passwordHash = await this.hashPassword(password);
     return await this.userService.create({

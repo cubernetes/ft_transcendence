@@ -4,11 +4,7 @@ import { friends } from "../models/schema";
 import { CustomError } from "../utils/errors";
 
 export default class FriendService {
-  private db: BetterSQLite3Database;
-
-  constructor(db: BetterSQLite3Database) {
-    this.db = db;
-  }
+  constructor(private readonly db: BetterSQLite3Database) {}
 
   // Get all friendships composite keys by user id
   // TODO: think about this more!!
@@ -20,12 +16,12 @@ export default class FriendService {
         .where(
           and(
             or(eq(friends.user1Id, id), eq(friends.user2Id, id)),
-            eq(friends.status, "accepted")
+            eq(friends.status, `accepted`)
           )
         );
     } catch (error) {
       //console.error("Error fetching all games:", error);
-      throw new CustomError("Failed to fetch friendships");
+      throw new CustomError(`Failed to fetch friendships`);
     }
   }
   async postFriendRequest() {}
