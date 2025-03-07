@@ -1,6 +1,22 @@
 import { FastifyInstance } from 'fastify';
+import { WebSocket } from '@fastify/websocket';
 
-export default async function (fastify: FastifyInstance) {
+export type Player = {
+    socket: WebSocket;
+    playerId: string;
+};
+
+export type GameSession = {
+    gameId: string;
+    players: { [playerId: string]: Player };
+    state: {
+        ballPosition: { x: number; y: number };
+        score: { player1: number; player2: number };
+        paddlePosition?: { [playerId: string]: 'up' | 'down' }; // Optional, depending on your logic
+    };
+};
+
+const websocketRoutes = async (fastify: FastifyInstance) => {
   // Store the initial game state
   let gameState = {
     ballPosition: { x: 50, y: 50 }, // Example ball position (center of the field)
@@ -11,7 +27,7 @@ export default async function (fastify: FastifyInstance) {
     score: { player1: 0, player2: 0 },
   };
 
-  fastify.get('/ws', { websocket: true }, (socket, _req) => {
+  fastify.get('/', { websocket: true }, (socket, _req) => {
     console.log('New WebSocket connection');
 
     // Send initial game state to the client
@@ -49,3 +65,5 @@ export default async function (fastify: FastifyInstance) {
     });
   });
 }
+
+export default websocketRoutes;
