@@ -35,7 +35,7 @@ export function createGameSection(): HTMLElement {
   gameContainer.appendChild(opponentPaddle);
 
   // WebSocket setup
-  const socket = new WebSocket('ws://localhost:8080/ws');
+  const socket = new WebSocket('/ws');
 
   socket.onopen = () => {
     console.log('WebSocket connection established.');
