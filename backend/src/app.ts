@@ -39,8 +39,6 @@ export default class App {
     this.registerRoute(routes.game, `/games`);
     this.registerRoute(routes.tournament, `/tournaments`);
     this.registerRoute(routes.friend, `/friends`);
-	this.registerRoute(routes.websocket, `/ws`);
-	// this.registerRoute(routes.websocket, '/wss');
   }
 
   private registerCors() {
@@ -57,19 +55,20 @@ export default class App {
   }
 
   private registerWs() {
-	  this.server.register(websocket, {
-		  options: {
-			  maxPayload: 1048576,
-		  },
-	  });
+    this.server.register(websocket, {
+      options: {
+        maxPayload: 1048576,
+      },
+    });
+    this.server.register(routes.websocket, { prefix: `/ws`, websocket: true });
+    // this.registerRoute(routes.websocket, '/wss');
   }
-
   private async init() {
     try {
       this.registerCors();
       this.registerJwt();
       this.registerRoutes();
-	  this.registerWs();
+      this.registerWs();
     } catch (error) {
       console.error("Error initializing server:", error);
       this.server.log.error("Error initializing server:", error);
