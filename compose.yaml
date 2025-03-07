@@ -14,8 +14,7 @@ services:
     volumes:
       - "caddy_data:/srv/.local/share/caddy/"
     environment:
-      - DOMAIN=${DOMAIN:?Error, DOMAIN environment variable must be set (see Makefile)}
-      - SCHEME=${SCHEME:?Error, SCHEME environment variable must be set (see Makefile)}
+      - DOMAINS=${DOMAINS:?Error, DOMAINS environment variable must be set (see Makefile)}
     develop:
       watch: # will reload caddy when changing Caddyfile in the host system
         - path: ./web/Caddyfile

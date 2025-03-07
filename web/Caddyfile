@@ -19,7 +19,7 @@
 	}
 }
 
-{$SCHEME:http}://{$DOMAIN:localhost}:8080 {
+{$DOMAINS:http://localhost} {
 	handle {
 		import waf
 		root * /srv

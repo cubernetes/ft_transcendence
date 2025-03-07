@@ -2,21 +2,21 @@ DC := docker compose
 D := docker
 
 .DEFAULT_GOAL := dev
+-include .env
+.EXPORT_ALL_VARIABLES:
 
 .PHONY: dev
 dev:
 	HTTP_PORT=$(DEV_HTTP_PORT) \
 	HTTPS_PORT=$(DEV_HTTPS_PORT) \
-	DOMAIN=$(DEV_DOMAIN) \
-	SCHEME=$(DEV_SCHEME) \
+	DOMAINS=$(DEV_DOMAINS) \
 	$(DC) up -d --build
 
 .PHONY: prod
 prod: # Don't forget to set DOMAIN and SCHEME in .env
 	HTTP_PORT=$(PROD_HTTP_PORT) \
 	HTTPS_PORT=$(PROD_HTTPS_PORT) \
-	DOMAIN=$(PROD_DOMAIN) \
-	SCHEME=$(PROD_SCHEME) \
+	DOMAINS=$(PROD_DOMAINS) \
 	$(DC) up -d --build
 
 .PHONY: clean
