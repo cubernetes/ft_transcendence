@@ -29,27 +29,27 @@ export const seed = async (db: BetterSQLite3Database) => {
       passwordHash: "123",
     },
     {
-      username: "Timo",
+      username: "Timo2",
       displayName: "Alice",
       passwordHash: "123",
     },
     {
-      username: "Darren",
+      username: "Darren2",
       displayName: "Bob",
       passwordHash: "123",
     },
     {
-      username: "Ben",
+      username: "Ben2",
       displayName: "Bob",
       passwordHash: "123",
     },
     {
-      username: "John",
+      username: "John2",
       displayName: "Bob",
       passwordHash: "123",
     },
     {
-      username: "Sonia",
+      username: "Sonia2",
       displayName: "Bob",
       passwordHash: "123",
     },

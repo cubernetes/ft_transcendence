@@ -15,6 +15,13 @@
       "when": 1741322734139,
       "tag": "0001_watery_sentinel",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1741327890549,
+      "tag": "0002_serious_korath",
+      "breakpoints": true
     }
   ]
 }
