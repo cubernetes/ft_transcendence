@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc --noEmit && node esbuild.config.js",
+    "build": "tsc --noEmit && npx drizzle-kit push && node esbuild.config.js",
     "watch": "tsc --noEmit && node esbuild.config.js --watch"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.24",
     "@types/ws": "^8.18.0",
+    "drizzle-kit": "^0.30.5",
     "esbuild": "^0.20.1",
     "typescript": "^5.3.3"
   }

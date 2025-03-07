@@ -23,8 +23,9 @@ WORKDIR /app
 # Copy package files to install dependencies first
 COPY ./package*.json ./
 COPY --from=builder /app/dist /app/dist
-COPY ./src/database/ /app/dist/
+COPY --from=builder /app/drizzle /app/drizzle
 
 RUN npm install --production
 
 CMD ["npm", "start"]
+#CMD ["node", "--trace-warnings", "dist/index.js"]

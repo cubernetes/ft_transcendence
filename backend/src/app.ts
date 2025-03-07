@@ -1,7 +1,7 @@
 import Fastify, { FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import websocket from "@fastify/websocket";
-import initDatabase from "./database/index";
+import initDatabase from "./model/database";
 import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import userRoutes from "./routes/user.route";
 import gameRoutes from "./routes/game.route";
@@ -57,7 +57,8 @@ export default class App {
       this.server.register(websocketRoutes);
 
     } catch (error) {
-      this.server.log.error("Error initializing server:", error);
+      console.error("Error initializing server:", error);
+      // this.server.log.error("Error initializing server:", error);
       process.exit(1);
     }
     this.initialized = true;
