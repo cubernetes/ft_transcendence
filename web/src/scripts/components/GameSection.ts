@@ -44,34 +44,24 @@ export function createGameSection(): HTMLElement {
 
   socket.onmessage = (event) => {
     console.log('Message from server:', event.data);
-
-    // Handle game state updates (like ball position, paddle position, score)
+  
     const gameState = JSON.parse(event.data);
-
+  
     if (gameState) {
       // Update ball position
       if (gameState.ballPosition) {
         ball.style.top = `${gameState.ballPosition.y}px`;
         ball.style.left = `${gameState.ballPosition.x}px`;
       }
-
-      // Update paddle positions
+  
+      // Update player paddle position
       if (gameState.paddlePosition) {
-        const playerPaddlePos = gameState.paddlePosition['player-1']; // Example playerId
-        if (playerPaddlePos === 'up') {
-          playerPaddle.style.top = '10px'; // Move to the top
-        } else if (playerPaddlePos === 'down') {
-          playerPaddle.style.top = `${gameContainer.clientHeight - 80}px`; // Move to the bottom
-        }
-
-        const opponentPaddlePos = gameState.paddlePosition['player-2']; // Example opponentId
-        if (opponentPaddlePos === 'up') {
-          opponentPaddle.style.top = '10px'; // Move to the top
-        } else if (opponentPaddlePos === 'down') {
-          opponentPaddle.style.top = `${gameContainer.clientHeight - 80}px`; // Move to the bottom
-        }
+        const player1PaddlePos = gameState.paddlePosition['player-1'].y;
+        playerPaddle.style.top = `${player1PaddlePos}px`; // Move player paddle
+  
+        // Update opponent paddle position similarly if needed
       }
-
+  
       // Update the score
       if (gameState.score) {
         console.log(`Score: Player 1 - ${gameState.score.player1}, Player 2 - ${gameState.score.player2}`);
@@ -92,6 +82,7 @@ export function createGameSection(): HTMLElement {
 
   const movePaddleUp = () => {
     if (socket.readyState === WebSocket.OPEN && !paddleMoving.up) {
+      console.log('Sending move up');
       socket.send('move up');
       paddleMoving.up = true;
     }
@@ -99,6 +90,7 @@ export function createGameSection(): HTMLElement {
 
   const movePaddleDown = () => {
     if (socket.readyState === WebSocket.OPEN && !paddleMoving.down) {
+      console.log('Sending move down');
       socket.send('move down');
       paddleMoving.down = true;
     }
@@ -106,6 +98,7 @@ export function createGameSection(): HTMLElement {
 
   const stopPaddleMovement = () => {
     if (socket.readyState === WebSocket.OPEN) {
+      console.log('Sending stop paddle movement');
       socket.send('move stop');
     }
     paddleMoving = { up: false, down: false };
@@ -113,6 +106,7 @@ export function createGameSection(): HTMLElement {
 
   // Add event listeners for keyboard input (arrow keys)
   document.addEventListener('keydown', (event) => {
+    console.log(`Key pressed: ${event.key}`);
     if (event.key === 'ArrowUp') {
       movePaddleUp();
     }
@@ -122,6 +116,7 @@ export function createGameSection(): HTMLElement {
   });
 
   document.addEventListener('keyup', (event) => {
+    console.log(`Key released: ${event.key}`);
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       stopPaddleMovement();
     }
@@ -132,14 +127,21 @@ export function createGameSection(): HTMLElement {
   startButton.className = 'bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600';
   startButton.textContent = 'Start Game';
   startButton.addEventListener('click', () => {
-    // Update UI instead of clearing game elements
+    console.log('Start game clicked');
+
+    // Prevent layout shift by updating existing elements
     const startMessage = document.createElement('p');
     startMessage.className = 'text-white';
     startMessage.textContent = 'Game started! Use arrow keys to move your paddle.';
 
+    // Remove any existing messages or buttons
+    const existingStartButton = gameContainer.querySelector('button');
+    if (existingStartButton) existingStartButton.remove();
+
     gameContainer.appendChild(startMessage);
 
     if (socket.readyState === WebSocket.OPEN) {
+      console.log('Sending startPong');
       socket.send('startPong');  // Start the game
     } else {
       console.error('WebSocket is not open.');
