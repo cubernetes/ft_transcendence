@@ -2,7 +2,9 @@
 **/node_modules/
 **/dist/
 
-backend/data/
-
 **/pnpm-lock.yaml
 **/.DS_Store
+**/.vscode/
+**/compile_commands.json
+
+backend/drizzle/db.sqlite
