@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ RUN npm run build
 FROM node:20-alpine AS production
 
 # Install build dependencies for bcrypt and other native modules
-RUN apk add --no-cache --virtual .build-deps \
+RUN apk update && apk add --no-cache --virtual .build-deps \
     python3 \
     make \
     g++ \
@@ -26,4 +26,6 @@ COPY --from=builder /app/drizzle /app/drizzle
 
 RUN npm install --production
 
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+# For dev hot-load only, can also use a script and conditional logic
+CMD ["npm", "run", "start:dev"]

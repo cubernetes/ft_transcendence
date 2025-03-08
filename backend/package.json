@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
+    "start:dev": "npx nodemon dist/index.js --watch",
     "db:migrate": "npx drizzle-kit migrate",
     "build": "tsc --noEmit && node esbuild.config.js",
-    "watch": "tsc --noEmit && node esbuild.config.js --watch",
+    "build:dev": "node esbuild.config.js --watch",
     "test": "tap",
     "test:watch": "tap -w"
   },
@@ -29,6 +30,7 @@
     "@types/ws": "^8.18.0",
     "drizzle-kit": "^0.30.5",
     "esbuild": "^0.20.1",
+    "nodemon": "^3.1.9",
     "tap": "^18.8.0",
     "typescript": "^5.3.3"
   }

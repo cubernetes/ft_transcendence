@@ -50,3 +50,8 @@ re: clean dev
 install:
 	npm --prefix=web install
 	npm --prefix=backend install
+
+.PHONY: nodemon
+nodemon: fclean install
+	$(SHELL) -c "cd backend && npm run build:dev &"
+	$(DC) up -d --build
