@@ -1,11 +1,10 @@
 DC := docker compose
 D := docker
 
-RM := rm -rf
 DB := backend/drizzle/db.sqlite
 
 .DEFAULT_GOAL := dev
--include .env
+include .env
 .EXPORT_ALL_VARIABLES:
 
 .PHONY: check-env
@@ -20,7 +19,7 @@ dev: check-env
 	$(DC) up -d --build
 
 .PHONY: prod
-prod: check-env # Don't forget to set DOMAIN and SCHEME in .env
+prod: check-env
 	HTTP_PORT=$(PROD_HTTP_PORT) \
 	HTTPS_PORT=$(PROD_HTTPS_PORT) \
 	DOMAINS=$(PROD_DOMAINS) \
@@ -28,12 +27,12 @@ prod: check-env # Don't forget to set DOMAIN and SCHEME in .env
 
 .PHONY: down
 down:
-	HTTP_PORT=$(DEV_HTTP_PORT) HTTPS_PORT=$(DEV_HTTPS_PORT) DOMAINS=$(DEV_DOMAINS) $(DC) down
+	$(DC) down
 
 .PHONY: clean
 clean: down
 	$(RM) $(DB)
-	$(D) system prune -f # for super pristine cleaning do `prune --all --volume -f`
+	$(D) system prune -f
 
 .PHONY: deepclean
 deepclean: clean
