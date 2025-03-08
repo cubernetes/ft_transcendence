@@ -8,15 +8,19 @@ DB := backend/drizzle/db.sqlite
 -include .env
 .EXPORT_ALL_VARIABLES:
 
+.PHONY: check-env
+check-env:
+	@test -f .env || cp .env.example .env
+
 .PHONY: dev
-dev:
+dev: check-env
 	HTTP_PORT=$(DEV_HTTP_PORT) \
 	HTTPS_PORT=$(DEV_HTTPS_PORT) \
 	DOMAINS=$(DEV_DOMAINS) \
 	$(DC) up -d --build
 
 .PHONY: prod
-prod: # Don't forget to set DOMAIN and SCHEME in .env
+prod: check-env # Don't forget to set DOMAIN and SCHEME in .env
 	HTTP_PORT=$(PROD_HTTP_PORT) \
 	HTTPS_PORT=$(PROD_HTTPS_PORT) \
 	DOMAINS=$(PROD_DOMAINS) \
@@ -53,11 +57,6 @@ re: clean dev
 install:
 	npm --prefix=web install
 	npm --prefix=backend install
-
-.PHONY: nodemon
-nodemon: fclean install
-	$(SHELL) -c "cd backend && npm run build:dev &"
-	$(DC) up -d --build
 
 EXTS := ts json
 SPACE := $(empty) $(empty)
