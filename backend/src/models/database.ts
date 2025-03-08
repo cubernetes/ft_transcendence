@@ -6,7 +6,6 @@ import fs from "fs";
 import { InternalServerError } from "../utils/errors";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { AppInstance } from "../app";
-import { users } from "./schema";
 
 /**
  * Initialize database connection synchronously.
