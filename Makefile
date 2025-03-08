@@ -68,5 +68,6 @@ PRETTIER := npx --prefix=backend prettier --write
 format:
 	$(PRETTIER) $(addprefix "**/*.",$(EXTS))
 
+# Only formats staged files, seems as a popular thing to have and seems to be working
 format-staged:
 	git diff --name-only --cached --diff-filter=ACM | grep -E '\.($(EXTS_PATTERN))$$' | xargs $(PRETTIER)
