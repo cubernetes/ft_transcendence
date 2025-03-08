@@ -1,56 +1,58 @@
-import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { users } from "./schema";
+import { AppInstance } from "../app";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
-export const seed = async (db: BetterSQLite3Database) => {
+export const seed = async (app: AppInstance, db: BetterSQLite3Database) => {
+  app.log.info(`Seed database with initial data...`);
   await db.insert(users).values([
     {
       username: "Timo",
-      displayName: "Alice",
+      displayName: "Timo",
       passwordHash: "123",
     },
     {
       username: "Darren",
-      displayName: "Bob",
+      displayName: "Darren",
       passwordHash: "123",
     },
     {
       username: "Ben",
-      displayName: "Bob",
+      displayName: "Ben",
       passwordHash: "123",
     },
     {
       username: "John",
-      displayName: "Bob",
+      displayName: "John",
       passwordHash: "123",
     },
     {
       username: "Sonia",
-      displayName: "Bob",
+      displayName: "Sonia",
       passwordHash: "123",
     },
     {
       username: "Timo2",
-      displayName: "Alice",
+      displayName: "Timo",
       passwordHash: "123",
     },
     {
       username: "Darren2",
-      displayName: "Bob",
+      displayName: "Darren",
       passwordHash: "123",
     },
     {
       username: "Ben2",
-      displayName: "Bob",
+      displayName: "Ben",
       passwordHash: "123",
     },
     {
       username: "John2",
-      displayName: "Bob",
+      displayName: "John",
       passwordHash: "123",
     },
     {
       username: "Sonia2",
-      displayName: "Bob",
+      displayName: "Sonia",
       passwordHash: "123",
     },
   ]);

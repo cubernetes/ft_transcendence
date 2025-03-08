@@ -47,10 +47,11 @@ CREATE TABLE `users` (
 	`username` text NOT NULL,
 	`display_name` text NOT NULL,
 	`password_hash` text NOT NULL,
-	`salt` text NOT NULL,
 	`totp_secret` text,
 	`avatar_url` text DEFAULT '/assets/default-avatar.png',
 	`wins` integer DEFAULT 0,
 	`losses` integer DEFAULT 0,
 	`created_at` numeric DEFAULT (CURRENT_TIMESTAMP)
 );
+--> statement-breakpoint
+CREATE UNIQUE INDEX `users_username_unique` ON `users` (`username`);

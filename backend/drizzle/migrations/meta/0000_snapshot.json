@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "ff6c1315-d7c3-4541-b4c2-bb7b5136d903",
+  "id": "84ca713d-ba45-4a27-9d4b-bd19112e7669",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "friends": {
@@ -348,13 +348,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "salt": {
-          "name": "salt",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "totp_secret": {
           "name": "totp_secret",
           "type": "text",
@@ -395,7 +388,15 @@
           "default": "(CURRENT_TIMESTAMP)"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "users_username_unique": {
+          "name": "users_username_unique",
+          "columns": [
+            "username"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

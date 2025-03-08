@@ -1,4 +1,4 @@
-import Fastify, { FastifyInstance } from "fastify";
+import Fastify, { FastifyBaseLogger, FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import websocket from "@fastify/websocket";
 import initDatabase from "./models/database";
@@ -6,39 +6,36 @@ import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import Service, { ServiceInstance } from "./services";
 import routes, { Route } from "./routes";
 import jwt from "@fastify/jwt";
+import WebsocketController from "./controllers/websocket.controller";
+import { InternalServerError } from "./utils/errors";
+import { appConfig } from "./config/app.config";
 
 export default class App {
-  private db: BetterSQLite3Database;
-  private server: FastifyInstance;
-  private service!: ServiceInstance;
-
-  constructor() {
-    this.db = initDatabase();
-    this.server = Fastify({ logger: true });
-    this.service = new Service(this.db, this.server);
-  }
+  server: FastifyInstance;
+  log: FastifyBaseLogger;
+  db: BetterSQLite3Database | undefined;
+  service: ServiceInstance | undefined;
 
   /**
-   * Test maybe using JSDoc, probably easier to generate docs later for api.
-   * @param route
-   * @param prefix
-   * @returns
+   * Dependency injection will make testing easier.
    */
-  private registerRoute(route: Route, prefix: string) {
-    this.server.register(route, {
-      prefix,
-      service: this.service,
-    });
+  constructor(db?: BetterSQLite3Database) {
+    this.server = Fastify(appConfig);
+    this.log = this.server.log;
+    this.db = db;
   }
 
   /**
    * Register all routes here.
    */
-  private registerRoutes() {
-    this.registerRoute(routes.user, `/users`);
-    this.registerRoute(routes.game, `/games`);
-    this.registerRoute(routes.tournament, `/tournaments`);
-    this.registerRoute(routes.friend, `/friends`);
+  private registerHttpRoutes(service: ServiceInstance) {
+    const registerRoute = (route: Route, prefix: string) =>
+      this.server.register(route, { prefix, service });
+
+    registerRoute(routes.user, `/users`);
+    registerRoute(routes.game, `/games`);
+    registerRoute(routes.tournament, `/tournaments`);
+    registerRoute(routes.friend, `/friends`);
   }
 
   private registerCors() {
@@ -54,25 +51,34 @@ export default class App {
     this.server.register(jwt, { secret });
   }
 
-  private registerWs() {
-    this.server.register(websocket, {
-      options: {
-        maxPayload: 1048576,
-      },
-    });
-    this.server.register(routes.websocket, { prefix: `/ws`, websocket: true });
+  private async registerWs(service: ServiceInstance) {
+    // Websocket has to be registered before the routes
+    await this.server.register(websocket, { options: { maxPayload: 1048576 } });
+
+    // Not exactly a route like REST, so leave it here for now
+    const controller = new WebsocketController(service.websocket);
+    this.server.get(
+      "/ws",
+      { websocket: true },
+      controller.handleConnection.bind(controller)
+    );
+
     // this.registerRoute(routes.websocket, '/wss');
   }
+
   private async init() {
     try {
+      if (!this.db) this.db = await initDatabase(this);
+      this.service = new Service(this, this.db);
+
+      // Websocket has to be registered before the routes
+      await this.registerWs(this.service);
       this.registerCors();
       this.registerJwt();
-      this.registerRoutes();
-      this.registerWs();
+      this.registerHttpRoutes(this.service);
     } catch (error) {
-      console.error("Error initializing server:", error);
-      this.server.log.error("Error initializing server:", error);
-      process.exit(1);
+      this.log.error({ err: error }, `Fail to initialize server`);
+      throw new InternalServerError(`Fail to initialize server`);
     }
   }
 
@@ -80,13 +86,12 @@ export default class App {
     try {
       await this.init();
       await this.server.listen({ port, host: "0.0.0.0" });
-      this.server.log.info(`Server running at port ${port}!`);
+      this.log.info(`Server running at port ${port}!`);
     } catch (error) {
-      this.server.log.error("Error starting server:", error);
-      if (error instanceof Error) {
-        this.server.log.error(error.stack);
-      }
-      process.exit(1);
+      this.log.error({ err: error }, `Fail to start server`);
+      throw new InternalServerError(`Fail to start server`);
     }
   }
 }
+
+export type AppInstance = InstanceType<typeof App>;
