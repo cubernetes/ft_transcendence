@@ -26,6 +26,6 @@ COPY --from=builder /app/drizzle /app/drizzle
 
 RUN npm install --production
 
-# CMD ["npm", "start"]
+CMD ["npm", "start"]
 # For dev hot-load only, can also use a script and conditional logic
-CMD ["npm", "run", "start:dev"]
+#CMD ["npm", "run", "start:dev"]

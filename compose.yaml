@@ -1,45 +1,45 @@
 name: ft-transcendence
 
 services:
-  web:
-    build:
-      context: "./web/"
-    container_name: web
-    restart: unless-stopped
-    ports:
-      - "${HTTP_PORT:-8080}:8080"
-      - "${HTTPS_PORT:-8443}:8443"
-    networks:
-      - ft-transcendence-net
-    volumes:
-      - "caddy_data:/srv/.local/share/caddy/"
-    environment:
-      - DOMAINS=${DOMAINS:-http://localhost}
-    develop:
-      watch: # will reload caddy when changing Caddyfile in the host system
-        - path: ./web/Caddyfile
-          action: rebuild
-          target: /etc/caddy/Caddyfile
+    web:
+        build:
+            context: "./web/"
+        container_name: web
+        restart: unless-stopped
+        ports:
+            - "${HTTP_PORT:-8080}:8080"
+            - "${HTTPS_PORT:-8443}:8443"
+        networks:
+            - ft-transcendence-net
+        volumes:
+            - "caddy_data:/srv/.local/share/caddy/"
+        environment:
+            - DOMAINS=${DOMAINS:-http://localhost}
+        develop:
+            watch: # will reload caddy when changing Caddyfile in the host system
+                - path: ./web/Caddyfile
+                  action: rebuild
+                  target: /etc/caddy/Caddyfile
 
-  backend:
-    build:
-      context: "./backend/"
-    container_name: backend
-    restart: unless-stopped
-    networks:
-      - ft-transcendence-net
-    environment:
-      - NODE_ENV=development
-      - BACKEND_PORT=${BACKEND_PORT:-3000}
-      - DB_PATH=/app/drizzle/db.sqlite # Will probably move later
-      - JWT_SECRET=${JWT_SECRET:-}
-    volumes:
-      - ./backend/drizzle:/app/drizzle
-      - ./backend/dist:/app/dist # For hot load only, testing
+    backend:
+        build:
+            context: "./backend/"
+        container_name: backend
+        restart: unless-stopped
+        networks:
+            - ft-transcendence-net
+        environment:
+            - NODE_ENV=development
+            - BACKEND_PORT=${BACKEND_PORT:-3000}
+            - DB_PATH=/app/drizzle/db.sqlite # Will probably move later
+            - JWT_SECRET=${JWT_SECRET:-}
+        volumes:
+            - ./backend/drizzle:/app/drizzle
+            #- ./backend/dist:/app/dist # For hot load only, testing
 
 volumes:
-  caddy_data:
+    caddy_data:
 
 networks:
-  ft-transcendence-net:
-    driver: bridge
+    ft-transcendence-net:
+        driver: bridge
