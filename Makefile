@@ -22,9 +22,12 @@ prod: # Don't forget to set DOMAIN and SCHEME in .env
 	DOMAINS=$(PROD_DOMAINS) \
 	$(DC) up -d --build
 
-.PHONY: clean
-clean:
+.PHONY: down
+down:
 	HTTP_PORT=$(DEV_HTTP_PORT) HTTPS_PORT=$(DEV_HTTPS_PORT) DOMAINS=$(DEV_DOMAINS) $(DC) down
+
+.PHONY: clean
+clean: down
 	$(RM) $(DB)
 	$(D) system prune -f # for super pristine cleaning do `prune --all --volume -f`
 
@@ -55,3 +58,15 @@ install:
 nodemon: fclean install
 	$(SHELL) -c "cd backend && npm run build:dev &"
 	$(DC) up -d --build
+
+EXTS := ts json
+SPACE := $(empty) $(empty)
+EXTS_PATTERN := $(subst $(SPACE),|,$(EXTS))  # Convert "ts json" → "ts|json"
+PRETTIER := npx --prefix=backend prettier --write
+
+.PHONY: format format-staged
+format:
+	$(PRETTIER) $(addprefix "**/*.",$(EXTS))
+
+format-staged:
+	git diff --name-only --cached --diff-filter=ACM | grep -E '\.($(EXTS_PATTERN))$$' | xargs $(PRETTIER)

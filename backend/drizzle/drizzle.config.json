@@ -1,8 +1,8 @@
 {
-  "out": "./drizzle/migrations",
-  "schema": "./src/models/schema.ts",
-  "dialect": "sqlite",
-  "dbCredentials": {
-    "url": "./drizzle/db.sqlite"
-  }
+    "out": "./drizzle/migrations",
+    "schema": "./src/models/schema.ts",
+    "dialect": "sqlite",
+    "dbCredentials": {
+        "url": "./drizzle/db.sqlite"
+    }
 }

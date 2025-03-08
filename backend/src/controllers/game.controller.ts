@@ -4,31 +4,28 @@ import { CustomError } from "../utils/errors";
 import { validateId } from "../utils/validator";
 
 export default class GameController {
-  constructor(private gameService: GameService) {}
+    constructor(private gameService: GameService) {}
 
-  async getAllGames(_request: FastifyRequest, reply: FastifyReply) {
-    try {
-      const games = await this.gameService.findAll();
-      return reply.send(games);
-    } catch (error) {
-      return error instanceof CustomError
-        ? error.send(reply)
-        : new CustomError(`Failed to fetch all games`).send(reply);
+    async getAllGames(_request: FastifyRequest, reply: FastifyReply) {
+        try {
+            const games = await this.gameService.findAll();
+            return reply.send(games);
+        } catch (error) {
+            return error instanceof CustomError
+                ? error.send(reply)
+                : new CustomError(`Failed to fetch all games`).send(reply);
+        }
     }
-  }
 
-  async getGameById(
-    request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply
-  ) {
-    try {
-      const id = validateId(request.params.id);
-      const game = await this.gameService.findById(id);
-      return reply.send(game);
-    } catch (error) {
-      return error instanceof CustomError
-        ? error.send(reply)
-        : new CustomError(`Failed to fetch game by ID`).send(reply);
+    async getGameById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+        try {
+            const id = validateId(request.params.id);
+            const game = await this.gameService.findById(id);
+            return reply.send(game);
+        } catch (error) {
+            return error instanceof CustomError
+                ? error.send(reply)
+                : new CustomError(`Failed to fetch game by ID`).send(reply);
+        }
     }
-  }
 }

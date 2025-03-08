@@ -4,7 +4,7 @@ import { friends, games, tournaments, users } from "./schema";
 export type User = InferSelectModel<typeof users>;
 export type UserInsert = InferInsertModel<typeof users>;
 export type UserInsertBody = Omit<UserInsert, "passwordHash"> & {
-  password: string;
+    password: string;
 };
 export type UserLoginBody = Pick<UserInsertBody, "username" | "password">;
 
