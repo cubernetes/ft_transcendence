@@ -39,7 +39,8 @@ export function createGameSection(): HTMLElement {
 
     socket.onopen = () => {
         console.log("WebSocket connection established.");
-        socket.send("ping"); // Send a test message
+        // socket.send("ping"); // Send a test message
+        socket.send("join player-1"); // Join the game as player 1);
     };
 
     socket.onmessage = (event) => {
@@ -48,6 +49,7 @@ export function createGameSection(): HTMLElement {
         const gameState = JSON.parse(event.data);
 
         if (gameState) {
+            console.log("Updated game state received:", gameState);
             // Update ball position
             if (gameState.ballPosition) {
                 ball.style.top = `${gameState.ballPosition.y}px`;
@@ -59,7 +61,8 @@ export function createGameSection(): HTMLElement {
                 const player1PaddlePos = gameState.paddlePosition["player-1"].y;
                 playerPaddle.style.top = `${player1PaddlePos}px`; // Move player paddle
 
-                // Update opponent paddle position similarly if needed
+                const opponentPaddlePos = gameState.paddlePosition["player-2"].y;
+                opponentPaddle.style.top = `${opponentPaddlePos}px`; // Move opponent paddle
             }
 
             // Update the score
