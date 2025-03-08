@@ -1,7 +1,6 @@
 **/.env
 **/node_modules/
 **/dist/
-**/dist/
 
 **/pnpm-lock.yaml
 **/.DS_Store
