@@ -37,7 +37,6 @@ down:
 
 .PHONY: clean
 clean: down
-	[ -n "$(DB_PATH)" ] && $(RM) backend/$(DB_PATH)
 	$(D) system prune -f
 
 .PHONY: deepclean
