@@ -20,6 +20,9 @@ services:
                 - path: "./web/Caddyfile"
                   action: rebuild
                   target: "/etc/caddy/Caddyfile"
+        env_file:
+          - .env
+          - config.env
 
     backend:
         build:
@@ -35,6 +38,9 @@ services:
             - JWT_SECRET=${JWT_SECRET:-}
         volumes:
             - "drizzle:/app/drizzle/"
+        env_file:
+          - .env
+          - config.env
 
 volumes:
     caddy_data:
