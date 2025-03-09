@@ -1,7 +1,6 @@
 import type { FastifyRequest } from "fastify";
 import { WebSocket } from "ws";
 import WebsocketService from "../services/websocket.service";
-// import type { Player, GameSession, GameState } from "../models/types";
 
 // import { validateId } from "../utils/validator";
 
@@ -34,11 +33,6 @@ export default class WebsocketController {
 
             // Retrieve the updated game state
             gameState = this.websocketService.getGameState(gameId);
-
-            if (gameState) {
-                // Broadcast the updated state to the client
-                conn.send(JSON.stringify(gameState));
-            }
         });
 
         conn.on("ping", () => {

@@ -16,24 +16,3 @@ export type TournamentInsert = InferInsertModel<typeof tournaments>;
 
 export type Friendship = InferSelectModel<typeof friends>;
 export type FriendshipInsert = InferInsertModel<typeof friends>;
-
-
-// TODO: Maybe move this to a separate file?
-import { WebSocket } from "ws";
-
-export type Player = {
-    socket: WebSocket;
-    playerId: string;
-};
-
-export type GameState = {
-    ballPosition: { x: number; y: number };
-    score: { player1: number; player2: number };
-    paddlePosition: { [playerId: string]: { y: number } };
-};
-
-export type GameSession = {
-    gameId: string;
-    players: Map<string, Player>;
-    state: GameState;
-};

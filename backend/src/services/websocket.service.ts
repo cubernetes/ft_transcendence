@@ -1,7 +1,7 @@
 import { WebSocket } from "ws";
 import { FastifyBaseLogger } from "fastify";
-// import type { GameState } from "../controllers/websocket.controller";
-import type { Player, GameSession, GameState } from "../models/types";
+import type { Player, GameSession, GameState } from "../game/game.types";
+import GameEngine from "../game/game.engine";
 
 export default class WebsocketService {
     private activeConnections: Map<number, WebSocket>;
@@ -18,17 +18,20 @@ export default class WebsocketService {
 
         // Ensure a game session exists
         if (!this.gameSessions.has(gameId)) {
+            const state: GameState = {
+                ballPosition: { x: 50, y: 50 },
+                paddlePosition: {
+                    "player-1": { y: 50 },
+                    "player-2": { y: 50 },
+                },
+                score: { player1: 0, player2: 0 },
+            };
+        
             this.gameSessions.set(gameId, {
                 gameId,
-                players: new Map<string, Player>(),  // Initialize as a Map
-                state: {
-                    ballPosition: { x: 50, y: 50 },
-                    paddlePosition: {
-                        "player-1": { y: 50 },
-                        "player-2": { y: 50 },
-                    },
-                    score: { player1: 0, player2: 0 },
-                },
+                players: new Map<string, Player>(),
+                state,
+                engine: new GameEngine(state), // Attach engine to session
             });
         }
 
@@ -46,6 +49,10 @@ export default class WebsocketService {
         // Log the game state and player IDs
         this.log.info(`Game state after registering player ${id}: ${JSON.stringify(session.state)}`);
         this.log.info(`Players in game ${gameId}: ${[...session.players.keys()].join(", ")}`);
+
+        if (session.players.size === 1) {   // Start the game loop if there's only one player (for now)
+            this.startGameLoop(gameId);
+        }
     }
 
     // Removes a player from the game session
@@ -55,6 +62,7 @@ export default class WebsocketService {
             session.players.delete(userId.toString());
             this.log.info(`Player ${userId} removed from game ${gameId}`);
             if (session.players.size === 0) {
+                this.stopGameLoop(gameId);
                 this.gameSessions.delete(gameId);
                 this.log.info(`Game session ${gameId} deleted as there are no players left`);
             }
@@ -119,32 +127,50 @@ export default class WebsocketService {
 
         this.log.info(`Player ${playerKey} paddle position: ${JSON.stringify(gameState.paddlePosition[playerKey])}`);
 
-        type Action = "move up" | "move down";
+        const engine = session.engine!;
 
-        const actions: Record<Action, (playerKey: string, gameState: GameState) => void> = {
-            "move up": (playerKey: string, gameState: GameState) => {
-                this.log.info(`${playerKey} wants to move paddle up`);	
-                if (gameState.paddlePosition[playerKey].y > 0) {
-                    gameState.paddlePosition[playerKey].y -= 10;
-                }
-            },
-            "move down": (playerKey: string, gameState: GameState) => {
-                this.log.info(`${playerKey} wants to move paddle down`);
-                if (gameState.paddlePosition[playerKey].y < 300) {
-                    gameState.paddlePosition[playerKey].y += 10;
-                }
-            },
+        const actionHandlers: Record<string, () => void> = {
+            "move up": () => engine.setInput(playerKey, "up"),
+            "move down": () => engine.setInput(playerKey, "down"),
+            "move stop": () => engine.setInput(playerKey, "stop"),
         };
+
         // Log action being sent
         this.log.info(`Received action: ${msg}`);
 
-        if (actions[msg as Action]) {
-            actions[msg as Action](playerKey, gameState);
+        if (msg in actionHandlers) {
+            actionHandlers[msg]();
         }
 
         // Broadcast updated state to all players in the session
         Object.values(session.players).forEach(({ socket }) => {
             socket.send(JSON.stringify(gameState));
         });
+    }
+
+    private startGameLoop(gameId: string, intervalMs: number = 25) {
+        const session = this.gameSessions.get(gameId);
+        if (!session || session.loop) return;
+    
+        session.loop = setInterval(() => {
+            const newState = session.engine!.update();
+            session.state = newState;
+    
+            // Broadcast to all players
+            session.players.forEach((player) => {
+                player.socket.send(JSON.stringify(session.state));
+            });
+        }, intervalMs); // Default interval of 25ms = 40 FPS
+
+        this.log.info(`Game loop started for ${gameId}`);
+    }
+
+    private stopGameLoop(gameId: string) {
+        const session = this.gameSessions.get(gameId);
+        if (!session?.loop) return;
+
+        clearInterval(session.loop);
+        session.loop = undefined;
+        this.log.info(`Game loop stopped for ${gameId}`);
     }
 }

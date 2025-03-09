@@ -82,48 +82,29 @@ export function createGameSection(): HTMLElement {
         console.log("WebSocket connection closed.");
     };
 
-    // Handle keyboard inputs for paddle movement
-    let paddleMoving = { up: false, down: false };
+    let lastDirection: "up" | "down" | "stop" = "stop";
 
-    const movePaddleUp = () => {
-        if (socket.readyState === WebSocket.OPEN && !paddleMoving.up) {
-            console.log("Sending move up");
-            socket.send("move up");
-            paddleMoving.up = true;
+    function sendDirection(direction: "up" | "down" | "stop") {
+        if (direction !== lastDirection && socket.readyState === WebSocket.OPEN) {
+            socket.send(`move ${direction}`);
+            lastDirection = direction;
         }
-    };
-
-    const movePaddleDown = () => {
-        if (socket.readyState === WebSocket.OPEN && !paddleMoving.down) {
-            console.log("Sending move down");
-            socket.send("move down");
-            paddleMoving.down = true;
-        }
-    };
-
-    const stopPaddleMovement = () => {
-        if (socket.readyState === WebSocket.OPEN) {
-            console.log("Sending stop paddle movement");
-            socket.send("move stop");
-        }
-        paddleMoving = { up: false, down: false };
-    };
+    }
 
     // Add event listeners for keyboard input (arrow keys)
     document.addEventListener("keydown", (event) => {
         console.log(`Key pressed: ${event.key}`);
         if (event.key === "ArrowUp") {
-            movePaddleUp();
-        }
-        if (event.key === "ArrowDown") {
-            movePaddleDown();
+            sendDirection("up");
+        } else if (event.key === "ArrowDown") {
+            sendDirection("down");
         }
     });
 
     document.addEventListener("keyup", (event) => {
         console.log(`Key released: ${event.key}`);
         if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-            stopPaddleMovement();
+            sendDirection("stop");
         }
     });
 
