@@ -1,4 +1,12 @@
 #!/bin/sh
+# Sets the hooks path, which will enable all hooks in this directory
+
+set -eu
+
+die () {
+	printf '\033[31mError: %s\033[m\n' "${1:-"Script $0 exited with unknown error"}"
+	exit 1
+}
 
 git_path=$(git rev-parse --show-toplevel) || { echo "You're not in a git repo, can't enable hooks"; exit 1; }
 hooks_path=.githooks/
@@ -10,6 +18,6 @@ read -r choice
 choice=$(printf %s "$choice" | tr Y y | xargs)
 [ "$choice" = y ] || [ -z "$choice" ] || { echo "Will not update hooks path"; exit 2; }
 
-git config --local core.hooksPath "$hooks_path"
+git config --local core.hooksPath "$hooks_path" || die "Failed to set hooks path"
 
 echo "Hooks path was updated"

@@ -1,18 +1,17 @@
-#!/usr/bin/env bash
+#!/bin/sh
+# Forces the commit message to be in a certain format
 
-red=$'\033[31m'
-green=$'\033[32m'
-rst=$'\033[m'
+set -eu
+
+die () {
+	printf '\033[31mError: %s\033[m\n' "${1:-"Script $0 exited with unknown error"}"
+	exit 1
+}
 
 regex_titlecase_verb='^[A-Z][a-z]+ '
 regex_imperative_verb='^[A-Z][a-z]+ed '
-error_msg1="${red}Commit message format is incorrect (must start with titlecase verb, regex: '^[A-Z][a-z]+ '). Example: '${green}Add feature${rst}${red}' or '${green}Update file${rst}${red}'${rst}."
-error_msg2="${red}Commit message format is incorrect (use imperative verb form). Example: '${green}Add feature${rst}${red}' or '${green}Update file${rst}${red}'${rst}."
 
-if ! grep -qE -e "$regex_titlecase_verb" "$1" ; then
-    echo "$error_msg1" >&2
-    exit 1
-elif grep -qE -e "$regex_imperative_verb" "$1" ; then
-    echo "$error_msg2" >&2
-    exit 2
-fi
+grep -qE -e "$regex_titlecase_verb" -- "$1" || \
+	die "Error: Commit message format is incorrect (must start with titlecase verb). Example: 'Add feature' or 'Update file'"
+grep -qE -e "$regex_imperative_verb" "$1" && \
+	die "Error: Commit message format is incorrect (use imperative verb form). Example: 'Add feature' or 'Update file'"

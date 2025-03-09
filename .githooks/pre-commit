@@ -1,4 +1,24 @@
 #!/bin/sh
+# Runs prettier on all files
 
-# TODO: do same thing as in makefile
-npx prettier
+set -eu
+
+die () {
+	printf '\033[31mError: %s\033[m\n' "${1:-"Script $0 exited with unknown error"}"
+	exit 1
+}
+
+# subshell to not clobber IFS
+format_staged () (
+	[ "$#" -lt 1 ] && die "format_staged function expects at least 1 extension as an argument"
+	command -v npx 1>/dev/null 2>&1 || die "Please install npx to run pre-commit hooks"
+	npx prettier -v 1>/dev/null 2>&1 || die "Please install prettier through npx to run pre-commit hooks"
+
+	IFS='|'
+	git diff --name-only --cached --diff-filter=d | \
+		grep -E "\.($*)\$"                        | \
+		tr '\n' '\0'                              | \
+		xargs -r0 npx prettier --write
+)
+
+format_staged ts json || die "Formatting staged files with prettier failed"
