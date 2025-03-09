@@ -31,6 +31,13 @@
 - Log management and observability (ELK + Grafana) - Sonia
 - Game statistics also on Blockchain - John
 
+
+## Debug
+- Websockets: Use wscat to connect to frontend (or backend via container IP):
+    wscat -c ws://localhost:8080/ws
+    wscat -c localhost:8080/ws
+    `backend via container IP` will only work if the backend exposes a port, which it doesn't by default
+
 ## License
 
 - [CC0 1.0 Universal](COPYING)

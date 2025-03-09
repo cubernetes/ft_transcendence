@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:23.9.0-alpine3.21 AS builder
 
 WORKDIR /app
 
@@ -7,8 +7,7 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-
-FROM node:20-alpine AS production
+FROM node:23.9.0-alpine3.21
 
 # Install build dependencies for bcrypt and other native modules
 RUN apk add --no-cache --virtual .build-deps \
@@ -23,7 +22,7 @@ WORKDIR /app
 # Copy package files to install dependencies first
 COPY ./package*.json ./
 COPY --from=builder /app/dist /app/dist
-COPY ./src/database/ /app/dist/
+COPY --from=builder /app/drizzle /app/drizzle
 
 RUN npm install --production
 

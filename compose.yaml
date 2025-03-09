@@ -1,44 +1,44 @@
 name: ft-transcendence
 
 services:
-  web:
-    build:
-      context: "./web/"
-    container_name: web
-    restart: unless-stopped
-    ports:
-      - "${HTTP_PORT:-80}:8080"
-      - "${HTTPS_PORT:-443}:8443"
-    networks:
-      - ft-transcendence-net
-    volumes:
-      - "caddy_data:/srv/.local/share/caddy/"
-    environment:
-      - DOMAIN=${DOMAIN:-}
-      - SCHEME=${SCHEME:-}
-      - PROD=${PROD:-0}
-    develop:
-      watch: # will reload caddy when changing Caddyfile.template in the host system
-        - path: ./web/Caddyfile.template
-          action: rebuild
-          target: /etc/caddy/Caddyfile.template
+    web:
+        build:
+            context: "./web/"
+        container_name: web
+        restart: unless-stopped
+        ports:
+            - "${HTTP_PORT:-8080}:8080"
+            - "${HTTPS_PORT:-8443}:8443"
+        networks:
+            - ft-transcendence-net
+        volumes:
+            - "caddy_data:/srv/.local/share/caddy/"
+        environment:
+            - DOMAINS=${DOMAINS:-http://localhost}
+        develop:
+            watch: # will reload caddy when changing Caddyfile in the host system
+                - path: ./web/Caddyfile
+                  action: rebuild
+                  target: /etc/caddy/Caddyfile
 
-  backend:
-    build:
-      context: "./backend/"
-    container_name: backend
-    restart: unless-stopped
-    networks:
-      - ft-transcendence-net
-    environment:
-      - NODE_ENV=development
-      - BACKEND_PORT=${BACKEND_PORT:-3000}
-    volumes:
-      - ./backend/data:/app/data/
+    backend:
+        build:
+            context: "./backend/"
+        container_name: backend
+        restart: unless-stopped
+        networks:
+            - ft-transcendence-net
+        environment:
+            - NODE_ENV=development
+            - BACKEND_PORT=${BACKEND_PORT:-3000}
+            - DB_PATH=${DB_PATH:-}
+            - JWT_SECRET=${JWT_SECRET:-}
+        volumes:
+            - ./backend/drizzle:/app/drizzle
 
 volumes:
-  caddy_data:
+    caddy_data:
 
 networks:
-  ft-transcendence-net:
-    driver: bridge
+    ft-transcendence-net:
+        driver: bridge
