@@ -17,9 +17,9 @@ services:
             - DOMAINS=${DOMAINS:-http://localhost}
         develop:
             watch: # will reload caddy when changing Caddyfile in the host system
-                - path: ./web/Caddyfile
+                - path: "./web/Caddyfile"
                   action: rebuild
-                  target: /etc/caddy/Caddyfile
+                  target: "/etc/caddy/Caddyfile"
         env_file:
           - .env
           - config.env
@@ -37,13 +37,14 @@ services:
             - DB_PATH=${DB_PATH:-}
             - JWT_SECRET=${JWT_SECRET:-}
         volumes:
-            - ./backend/drizzle:/app/drizzle
+            - "drizzle:/app/drizzle/"
         env_file:
           - .env
           - config.env
 
 volumes:
     caddy_data:
+    drizzle:
 
 networks:
     ft-transcendence-net:
