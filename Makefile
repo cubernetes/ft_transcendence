@@ -2,7 +2,9 @@ DC := docker compose
 D := docker
 
 .DEFAULT_GOAL := dev
+
 include .env
+include config.env
 .EXPORT_ALL_VARIABLES:
 
 .PHONY: check-env
