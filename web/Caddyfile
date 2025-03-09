@@ -5,6 +5,7 @@
 	http_port 8080
 	https_port 8443
 	order coraza_waf first
+	{$CADDY_EXTRA_GLOBAL_DIRECTIVES}
 }
 
 (waf) {

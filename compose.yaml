@@ -15,6 +15,7 @@ services:
             - "caddy_data:/srv/.local/share/caddy/"
         environment:
             - SITES=${SITES:-http://localhost}
+            - CADDY_EXTRA_GLOBAL_DIRECTIVES=${CADDY_EXTRA_GLOBAL_DIRECTIVES:-}
         develop:
             watch: # will reload caddy when changing Caddyfile in the host system
                 - path: "./web/Caddyfile"

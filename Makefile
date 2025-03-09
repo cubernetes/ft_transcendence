@@ -21,6 +21,17 @@ dev: check-env
 	SITES="$(DEV_SITES)" \
 	$(DC) up -d --build
 
+.PHONY: dev
+dev-tls: check-env
+	[ -n "$(DEV_HTTP_PORT)" ] && \
+	[ -n "$(DEV_HTTPS_PORT)" ] && \
+	[ -n "$(DEV_SITES)" ] && \
+	HTTP_PORT="$(DEV_HTTP_PORT)" \
+	HTTPS_PORT="$(DEV_HTTPS_PORT)" \
+	SITES="$$(printf %s "$(DEV_SITES)" | sed 's/http\(:\/\/[^[:space:]]*\) /http\1 https\1 /g')" \
+	CADDY_EXTRA_GLOBAL_DIRECTIVES="$$(printf 'auto_https disable_redirects')" \
+	$(DC) up -d --build
+
 .PHONY: prod
 prod: check-env
 	[ -n "$(PROD_HTTP_PORT)" ] && \
