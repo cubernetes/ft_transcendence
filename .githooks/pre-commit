@@ -1,3 +1,4 @@
 #!/bin/sh
 
+# TODO: do same thing as in makefile
 npx prettier
