@@ -48,7 +48,8 @@ fclean: deepclean
 	$(RM) -r web/node_modules/ web/dist/
 
 .PHONY: re
-re: clean dev
+re: clean
+	$(MAKE) dev
 
 .PHONY: install
 install:
@@ -56,16 +57,16 @@ install:
 	npm --prefix=backend install
 
 
-
 EXTS := ts json
 SPACE := $(empty) $(empty)
 EXTS_PATTERN := $(subst $(SPACE),|,$(EXTS))  # Convert "ts json" → "ts|json"
 PRETTIER := npx --prefix=backend prettier --write
 
-.PHONY: format format-staged
+.PHONY: format
 format:
 	$(PRETTIER) $(addprefix "**/*.",$(EXTS))
 
 # Only formats staged files, seems as a popular thing to have and seems to be working
+.PHONY: format-staged
 format-staged:
-	git diff --name-only --cached --diff-filter=ACM | grep -E '\.($(EXTS_PATTERN))$$' | xargs $(PRETTIER)
+	git diff --name-only --cached --diff-filter=ACMRT | grep -E '\.($(EXTS_PATTERN))$$' | tr '\n' '\0' | xargs -r0 $(PRETTIER)
