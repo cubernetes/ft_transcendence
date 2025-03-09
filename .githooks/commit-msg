@@ -1,0 +1,17 @@
+#!/bin/sh
+# Forces the commit message to be in a certain format
+
+set -eu
+
+die () {
+	printf '\033[31mError: %s\033[m\n' "${1:-"Script $0 exited with unknown error"}"
+	exit 1
+}
+
+regex_titlecase_verb='^[A-Z][a-z]+ '
+regex_imperative_verb='^[A-Z][a-z]+ed '
+
+grep -qE -e "$regex_titlecase_verb" -- "$1" || \
+	die "Commit message format is incorrect (must start with titlecase verb). Example: 'Add feature' or 'Update file'"
+! grep -qE -e "$regex_imperative_verb" "$1" || \
+	die "Commit message format is incorrect (use imperative verb form). Example: 'Add feature' or 'Update file'"

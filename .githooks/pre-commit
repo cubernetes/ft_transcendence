@@ -1,0 +1,40 @@
+#!/bin/sh
+# Runs prettier on all files
+
+set -eu
+
+die () {
+	printf '\033[31mError: %s\033[m\n' "${1:-"Script $0 exited with unknown error"}"
+	exit 1
+}
+
+# subshell to not clobber IFS
+format_staged () (
+	[ "$#" -lt 1 ] && die "format_staged function expects at least 1 extension as an argument"
+	command -v npx 1>/dev/null 2>&1 || die "Please install npx to run pre-commit hooks"
+	npx prettier -v 1>/dev/null 2>&1 || die "Please install prettier through npx to run pre-commit hooks"
+
+	IFS='|'
+	if git diff --name-only --cached --diff-filter=d | \
+		grep -E "\.($*)\$"                        | \
+		tr '\n' '\0'                              | \
+		xargs -r0 npx prettier --list-different 1>/dev/null; then
+		all_good=1
+	else
+		all_good=0
+	fi
+
+	git diff --name-only --cached --diff-filter=d | \
+		grep -E "\.($*)\$"                        | \
+		tr '\n' '\0'                              | \
+		xargs -r0 npx prettier --write
+
+	if [ ! "$all_good" = "1" ]; then
+		printf '\033[33m%s\033[m\n' "Warning: Not commiting since some files were formatted with prettier"
+		printf '\033[33m%s\033[m\n' "         Run 'git add -u' to stage those files as well"
+		printf '\033[33m%s\033[m\n' "         Commit again to force the commit (i.e. ignore files changed by prettier)"
+		return 1
+	fi
+)
+
+format_staged ts json
