@@ -19,7 +19,7 @@
 	}
 }
 
-{$DOMAINS:http://localhost} {
+{$SITES:http://localhost} {
 	handle {
 		import waf
 		root * /srv

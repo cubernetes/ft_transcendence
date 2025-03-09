@@ -14,7 +14,7 @@ services:
         volumes:
             - "caddy_data:/srv/.local/share/caddy/"
         environment:
-            - DOMAINS=${DOMAINS:-http://localhost}
+            - SITES=${SITES:-http://localhost}
         develop:
             watch: # will reload caddy when changing Caddyfile in the host system
                 - path: "./web/Caddyfile"
