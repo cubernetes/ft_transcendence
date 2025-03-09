@@ -37,6 +37,7 @@ jobs:
 
       - name: Connect, Pull, Make
         # the GH_ACTIONS_PRODUCTION no-op is just so you can find the process easily on the host
+        # Also, git stash --include-untracked will leave stuff that is in .gitignore, most importantly, .env
         run: |
           ssh \
             -o IdentitiesOnly=yes                                                                    \
@@ -49,7 +50,7 @@ jobs:
              set -Eeuxo pipefail ;                                                                   \
              cd ${{ secrets.PRODUCTION_WORK_DIR }} ;                                                 \
              git stash --include-untracked ;                                                         \
-             git checkout --force ${{ secrets.PRODUCTION_BRANCH }} ;                                         \
+             git checkout --force ${{ secrets.PRODUCTION_BRANCH }} ;                                 \
              git pull --rebase --force ${{ secrets.REMOTE_NAME }} ${{ secrets.PRODUCTION_BRANCH }} ; \
              make clean ;                                                                            \
              make prod"
