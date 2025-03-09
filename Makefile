@@ -1,8 +1,6 @@
 DC := docker compose
 D := docker
 
-DB := backend/drizzle/db.sqlite
-
 .DEFAULT_GOAL := dev
 include .env
 .EXPORT_ALL_VARIABLES:
@@ -31,7 +29,7 @@ down:
 
 .PHONY: clean
 clean: down
-	$(RM) $(DB)
+	$(RM) backend/$(DB_PATH)
 	$(D) system prune -f
 
 .PHONY: deepclean
@@ -46,8 +44,8 @@ deepclean: clean
 
 .PHONY: fclean
 fclean: deepclean
-	$(RM) backend/node_modules/ backend/dist/
-	$(RM) web/node_modules/ web/dist/
+	$(RM) -r backend/node_modules/ backend/dist/
+	$(RM) -r web/node_modules/ web/dist/
 
 .PHONY: re
 re: clean dev
@@ -56,6 +54,8 @@ re: clean dev
 install:
 	npm --prefix=web install
 	npm --prefix=backend install
+
+
 
 EXTS := ts json
 SPACE := $(empty) $(empty)

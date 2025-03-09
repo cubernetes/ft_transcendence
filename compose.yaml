@@ -31,11 +31,10 @@ services:
         environment:
             - NODE_ENV=development
             - BACKEND_PORT=${BACKEND_PORT:-3000}
-            - DB_PATH=/app/drizzle/db.sqlite # Will probably move later
+            - DB_PATH=${DB_PATH:-}
             - JWT_SECRET=${JWT_SECRET:-}
         volumes:
             - ./backend/drizzle:/app/drizzle
-            #- ./backend/dist:/app/dist # For hot load only, testing
 
 volumes:
     caddy_data:
