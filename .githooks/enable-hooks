@@ -1,0 +1,15 @@
+#!/bin/sh
+
+git_path=$(git rev-parse --show-toplevel) || { echo "You're not in a git repo, can't enable hooks"; exit 1; }
+hooks_path=.githooks/
+
+printf 'You are in this repository:            %s\n' "$git_path"
+printf 'And the hooks path will be updated to: %s/\033[42;30m%s\033[m\n' "$git_path" "$hooks_path"
+printf 'Do you want to continue? (Y/n) '
+read -r choice
+choice=$(printf %s "$choice" | tr Y y | xargs)
+[ "$choice" = y ] || [ -z "$choice" ] || { echo "Will not update hooks path"; exit 2; }
+
+git config --local core.hooksPath "$hooks_path"
+
+echo "Hooks path was updated"

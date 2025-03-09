@@ -1,0 +1,15 @@
+#!/bin/sh
+
+git_path=$(git rev-parse --show-toplevel) || { echo "You're not in a git repo, can't reset hooks"; exit 1; }
+hooks_path=.githooks/
+
+printf 'You are in this repository: %s\n' "$git_path"
+printf 'And the hooks path will be reset\n'
+printf 'Do you want to continue? (Y/n) '
+read -r choice
+choice=$(printf %s "$choice" | tr Y y | xargs)
+[ "$choice" = y ] || [ -z "$choice" ] || { echo "Will not reset hooks path"; exit 2; }
+
+git config --local --unset core.hooksPath
+
+echo "Hooks path was reset"
