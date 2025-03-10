@@ -18,9 +18,9 @@
 	}
 }
 
-{$SITES:http://localhost} {
-	log
+{$SITES:localhost} {
 	{$CADDY_EXTRA_SITE_DIRECTIVES}
+	log
 	handle {
 		import waf
 		root * /srv
