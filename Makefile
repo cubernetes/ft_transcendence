@@ -19,22 +19,9 @@ dev: check-env
 	HTTP_PORT="$(DEV_HTTP_PORT)" \
 	HTTPS_PORT="$(DEV_HTTPS_PORT)" \
 	SITES="$(DEV_SITES)" \
-	CADDY_EXTRA_GLOBAL_DIRECTIVES="$$(printf 'auto_https disable_redirects')" \
-	CADDY_EXTRA_SITE_DIRECTIVES="$$(printf 'tls internal')" \
+	CADDY_EXTRA_GLOBAL_DIRECTIVES="auto_https disable_redirects" \
+	CADDY_EXTRA_SITE_DIRECTIVES="tls internal" \
 	$(DC) up -d --build
-
-.PHONY: dev
-dev-tls: check-env
-	[ -n "$(DEV_HTTP_PORT)" ] && \
-	[ -n "$(DEV_HTTPS_PORT)" ] && \
-	[ -n "$(DEV_SITES)" ] && \
-	HTTP_PORT="$(DEV_HTTP_PORT)" \
-	HTTPS_PORT="$(DEV_HTTPS_PORT)" \
-	SITES="$$(printf %s "$(DEV_SITES)" | sed 's/http\(:\/\/[^[:space:]]*\)\( \|$$\)/http\1 https\1 /g')" \
-	CADDY_EXTRA_GLOBAL_DIRECTIVES="$$(printf 'auto_https disable_redirects')" \
-	CADDY_EXTRA_SITE_DIRECTIVES="$$(printf 'tls internal')" \
-	$(DC) up -d --build
-	@# See wiki for explanation of the commands: https://github.com/cubernetes/ft-transcendence/wiki/Makefile-dev%E2%80%90tls-target-explanation
 
 .PHONY: prod
 prod: check-env
