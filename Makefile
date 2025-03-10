@@ -19,6 +19,8 @@ dev: check-env
 	HTTP_PORT="$(DEV_HTTP_PORT)" \
 	HTTPS_PORT="$(DEV_HTTPS_PORT)" \
 	SITES="$(DEV_SITES)" \
+	CADDY_EXTRA_GLOBAL_DIRECTIVES="$$(printf 'auto_https disable_redirects')" \
+	CADDY_EXTRA_SITE_DIRECTIVES="$$(printf 'tls internal')" \
 	$(DC) up -d --build
 
 .PHONY: dev

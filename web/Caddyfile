@@ -21,6 +21,7 @@
 }
 
 {$SITES:http://localhost} {
+	{$CADDY_EXTRA_SITE_DIRECTIVES}
 	handle {
 		import waf
 		root * /srv
