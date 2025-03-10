@@ -40,6 +40,10 @@ dev-tls: check-env
 	# - note that both http sites got turned into https sites, but the one https site that was already there was not downgraded to http, this is intentional
 	# - The sed command matches for sites by search for this pattern: 'http\(:\/\/[^[:space:]]*\) '
 	# - That pattern captures the part after the http. In the replacement, it then uses the capture twice to generate the http and also the https site.
+	# Explanation of the CADDY_EXTRA_GLOBAL_DIRECTIVES variable:
+	# - This one is merely to add extra directives to caddy. The reason to put it inside a printf call is to allow
+	#   for multiple lines (== multiple directives). The 'auto_https disable_redirects' directive is to disable
+	#   automatic redirect from http to https
 
 .PHONY: prod
 prod: check-env
