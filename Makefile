@@ -34,11 +34,11 @@ dev-tls: check-env
 	# Explanation of the SITES variable:
 	# - $(DEV_SITES) is a space-separated list of sites (i.e. "http://localhost https://whatever http://127.0.0.1")
 	# - then we're printing that string and pipe it through sed to do some transormation of that strings
-	# - namely, what we want is do turn every http sites into a https site (for tls), BUT ALSO keep the old http site
+	# - namely, what we want is do turn every http site into a https site (for tls), BUT ALSO keep the old http site
 	# - Therefore, the example string from above would turn into this:
 	# - "http://localhost https://localhost https://whatever http://127.0.0.1 https://127.0.0.1"
 	# - note that both http sites got turned into https sites, but the one https site that was already there was not downgraded to http, this is intentional
-	# - The sed command matches for sites by search for this pattern: 'http\(:\/\/[^[:space:]]*\) '
+	# - The sed command matches for sites by searching for this pattern: 'http\(:\/\/[^[:space:]]*\) '
 	# - That pattern captures the part after the http. In the replacement, it then uses the capture twice to generate the http and also the https site.
 	# Explanation of the CADDY_EXTRA_GLOBAL_DIRECTIVES variable:
 	# - This one is merely to add extra directives to caddy. The reason to put it inside a printf call is to allow
