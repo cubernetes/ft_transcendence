@@ -19,6 +19,7 @@
 }
 
 {$SITES:http://localhost} {
+	log
 	{$CADDY_EXTRA_SITE_DIRECTIVES}
 	handle {
 		import waf
